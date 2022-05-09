@@ -36,6 +36,11 @@
                             href: path('product_index'),
                             label: 'Produits'
                         }) }}
+
+                        {{ include('component/nav/navbar_menu_item.html.twig', {
+                            href: path('delivery_index'),
+                            label: 'Livraisons'
+                        }) }}
                     {% endif %}
                 </div>
             </div>
@@ -79,10 +84,15 @@
                 }) }}
 
                 {% if is_granted('ROLE_PROJECT_MANAGER') %}
-                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
-                    href: path('home_index'),
-                    label: 'Produits'
-                }) }}
+                    {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                        href: path('home_index'),
+                        label: 'Produits'
+                    }) }}
+
+                    {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                        href: path('delivery_index'),
+                        label: 'Livraisons'
+                    }) }}
                 {% endif %}
             </ul>
         </div>
