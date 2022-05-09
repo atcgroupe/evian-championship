@@ -140,4 +140,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getDisplayName(string $option): string
+    {
+        return match ($option) {
+            'navbar' => substr($this->getFirstName(), 0, 1),
+        };
+    }
 }
