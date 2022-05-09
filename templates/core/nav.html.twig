@@ -1,0 +1,97 @@
+<nav
+    class="
+        fixed top-0 left-0 w-full
+        bg-gradient-to-b from-white via-white to-transparent
+        pb-5
+    "
+    data-controller="navbar"
+>
+    <div>
+        <div
+            class="
+                flex justify-between items-center
+                bg-gray-100
+            "
+        >
+            {# Left side #}
+            <div class="flex items-center">
+                {# Brand #}
+                <a href="{{ path('home_index') }}" class="pr-5">
+                    <img
+                        class="inline-block"
+                        src="{{ asset('build/images/app/branding-navbar.svg') }}"
+                        alt="branding"
+                        width="210"
+                    >
+                </a>
+
+                {# Menu #}
+                <div class="flex items-center justify-between hidden sm:block sm:ml-5 h-full">
+                    {{ include('component/nav/navbar_menu_item.html.twig', {
+                        href: path('home_index'),
+                        label: 'Suivi des jobs'
+                    }) }}
+
+                    {{ include('component/nav/navbar_menu_item.html.twig', {
+                        href: path('home_index'),
+                        label: 'Nouveau job'
+                    }) }}
+
+                    {{ include('component/nav/navbar_menu_item.html.twig', {
+                        href: path('home_index'),
+                        label: 'Paramètres'
+                    }) }}
+                </div>
+            </div>
+
+            {# Right side #}
+            <div class="flex items-center justify-end px-5">
+                {# Logout #}
+                <div class="mr-2">
+                    <a href="{{ path('app_logout') }}">
+                        <i class="fas fa-sign-out-alt text-xl text-gray-400 hover:text-gray-800"></i>
+                    </a>
+                </div>
+
+                {# User #}
+                <div class="hidden sm:block px-3.5 py-1.5 rounded-full bg-prunoise text-white text-xl">
+                    {{ app.user.displayName('navbar') }}
+                </div>
+
+                {# Button for mobile menu #}
+                <div class="sm:hidden" data-action="click->navbar#toggle">
+                    <i id="app_navbar_button" class="fas fa-bars text-3xl text-gray-500"></i>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="app_navbar_mobile_menu"
+            class="
+                hidden
+                bg-gray-200
+                px-3 py-2
+                border-t border-gray-500
+                transition ease-in-out duration-300
+            "
+            {{ stimulus_target('navbar', 'mobile') }}
+        >
+            <ul>
+                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                    href: path('home_index'),
+                    label: 'Suivi des jobs'
+                }) }}
+
+                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                    href: path('home_index'),
+                    label: 'Nouveau job'
+                }) }}
+
+                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                    href: path('home_index'),
+                    label: 'Paramètres'
+                }) }}
+            </ul>
+        </div>
+    </div>
+</nav>
