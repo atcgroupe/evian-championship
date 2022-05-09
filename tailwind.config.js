@@ -18,6 +18,7 @@ module.exports = {
       cyan: colors.cyan,
       orange: colors.orange,
       green: colors.green,
+      'prunoise': '#B40F69'
     },
     extend: {},
   },

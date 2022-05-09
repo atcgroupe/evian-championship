@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<div class="mx-auto h-full w-full flex items-center justify-center px-3">
+    <form class="" method="post">
+        <div class="flex justify-center">
+            <img class="inline-block" src="{{ asset('build/images/app/branding.svg') }}" alt="branding" width="400">
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% endif %}
+
+        <h1 class="mt-6 pl-3 py-2 text-prunoise text-3xl font-light text-center rounded-md">Plateforme Web2Print</h1>
+
+        <div class="mt-6 px-3">
+            <div >
+                <label class="block px-3 mb-1 text-gray-500" for="inputEmail">Email</label>
+                <input
+                        type="email"
+                        value="{{ last_username }}"
+                        name="email"
+                        id="inputEmail"
+                        class="
+                            block w-full px-3 py-2
+                            border border-gray-400 focus:border-prunoise
+                            rounded
+                            outline outline-transparent
+                        "
+                        autocomplete="email"
+                        required
+                        autofocus
+                >
+            </div>
+
+            <div class="mt-5">
+                <label class="block px-3 mb-1 text-gray-500" for="inputPassword">Mot de passe</label>
+                <input
+                        type="password"
+                        value="{{ last_username }}"
+                        name="password"
+                        id="inputPassword"
+                        class="
+                            block w-full px-3 py-2
+                            border border-gray-400 focus:border-prunoise rounded
+                            outline outline-transparent
+                        "
+                        autocomplete="current-password"
+                        required
+                >
+            </div>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+
+            <button
+                class="
+                    mt-8 py-2
+                    border border-gray-500
+                    text-gray-500 hover:text-white text-xl
+                    hover:bg-prunoise hover:border-prunoise
+                    rounded-md
+                    w-full
+                "
+                type="submit"
+            >
+                Entrer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
