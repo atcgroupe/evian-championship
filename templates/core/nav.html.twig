@@ -1,8 +1,7 @@
 <nav
     class="
         fixed top-0 left-0 w-full
-        bg-gradient-to-b from-white via-white to-transparent
-        pb-5
+        shadow-md
     "
     data-controller="navbar"
 >
@@ -10,7 +9,7 @@
         <div
             class="
                 flex justify-between items-center
-                bg-gray-100
+                bg-white
             "
         >
             {# Left side #}
@@ -21,26 +20,23 @@
                         class="inline-block"
                         src="{{ asset('build/images/app/branding-navbar.svg') }}"
                         alt="branding"
-                        width="210"
+                        width="230"
                     >
                 </a>
 
                 {# Menu #}
-                <div class="flex items-center justify-between hidden sm:block sm:ml-5 h-full">
+                <div class="flex items-center justify-between hidden lg:block sm:ml-5 h-full">
                     {{ include('component/nav/navbar_menu_item.html.twig', {
                         href: path('home_index'),
                         label: 'Suivi des jobs'
                     }) }}
 
-                    {{ include('component/nav/navbar_menu_item.html.twig', {
-                        href: path('home_index'),
-                        label: 'Nouveau job'
-                    }) }}
-
-                    {{ include('component/nav/navbar_menu_item.html.twig', {
-                        href: path('home_index'),
-                        label: 'Paramètres'
-                    }) }}
+                    {% if is_granted('ROLE_PROJECT_MANAGER') %}
+                        {{ include('component/nav/navbar_menu_item.html.twig', {
+                            href: path('product_index'),
+                            label: 'Produits'
+                        }) }}
+                    {% endif %}
                 </div>
             </div>
 
@@ -54,12 +50,12 @@
                 </div>
 
                 {# User #}
-                <div class="hidden sm:block px-3.5 py-1.5 rounded-full bg-prunoise text-white text-xl">
+                <div class="hidden lg:block px-3.5 py-1.5 rounded-full bg-prunoise text-white text-xl">
                     {{ app.user.displayName('navbar') }}
                 </div>
 
                 {# Button for mobile menu #}
-                <div class="sm:hidden" data-action="click->navbar#toggle">
+                <div class="lg:hidden" data-action="click->navbar#toggle">
                     <i id="app_navbar_button" class="fas fa-bars text-3xl text-gray-500"></i>
                 </div>
             </div>
@@ -82,15 +78,12 @@
                     label: 'Suivi des jobs'
                 }) }}
 
+                {% if is_granted('ROLE_PROJECT_MANAGER') %}
                 {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
                     href: path('home_index'),
-                    label: 'Nouveau job'
+                    label: 'Produits'
                 }) }}
-
-                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
-                    href: path('home_index'),
-                    label: 'Paramètres'
-                }) }}
+                {% endif %}
             </ul>
         </div>
     </div>

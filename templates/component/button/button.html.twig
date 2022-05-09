@@ -1,0 +1,96 @@
+{#
+    Options:
+    - href
+    - label
+    - labelClass
+    - id
+    - class
+    - icon: button icon (fontawsome icon. e.g. "fa fa-plus") | Default: none
+    - iconClass: class for icon container
+    - size: small|medium - default: normal
+    - style: info|danger - default: secondary
+    - width: full|fit - default: fit
+    - rounded: true|false
+#}
+
+{# Default options #}
+{% set tag = 'button' %}
+{% set buttonType = 'submit' %}
+{% set padding = 'py-2 px-3' %}
+{% set fontSize = 'text-base' %}
+{% set hoverTextStyle = 'hover:text-gray-600' %}
+{% set hoverBorderStyle = '' %}
+{% set hoverRingStyle = 'hover:ring-4 ring-gray-200' %}
+{% set display = 'inline-flex' %}
+
+{# tag #}
+{% if href is defined %}
+    {% set tag = 'a' %}
+{% endif %}
+
+{# Options #}
+    {# size: small|medium #}
+    {% if size is defined %}
+        {% if size == 'small' %}
+            {% set padding = 'text-sm py-1 px-2' %}
+            {% set fontSize = 'text-sm' %}
+        {% elseif size == 'medium' %}
+            {% set padding = 'py-1 px-3' %}
+        {% endif %}
+    {% endif %}
+
+    {# style: info|danger #}
+    {% if style is defined %}
+        {% if style == 'info' %}
+            {% set hoverTextStyle = 'hover:text-blue-400' %}
+            {% set hoverBorderStyle = 'hover:border-blue-400' %}
+            {% set hoverRingStyle = 'hover:ring-4 ring-blue-200' %}
+        {% elseif style == 'danger' %}
+            {% set hoverTextStyle = 'hover:text-red-500' %}
+            {% set hoverBorderStyle = 'hover:border-red-500' %}
+            {% set hoverRingStyle = 'hover:ring-4 ring-red-200' %}
+        {% endif %}
+    {% endif %}
+
+    {# width: full|fit #}
+    {% if width is defined %}
+        {% if width == 'full' %}
+            {% set display = 'flex' %}
+        {% elseif width == 'fit' %}
+            {% set display = 'inline-flex' %}
+        {% endif %}
+    {% endif %}
+
+    {# type (button type)#}
+    {% if type is defined %}
+        {% set buttonType = type %}
+    {% endif %}
+
+{# Template #}
+<{{ tag }}
+    {% if tag == 'a' %}href="{{ href }}"{% endif %}
+    {% if tag == 'button' %}type="{{ buttonType }}"{% endif %}
+    {% if id is defined %}id="{{ id }}"{% endif %}
+    class="
+        {% if label is defined %}
+            items-center justify-center
+            border border-gray-500 text-gray-500 font-normal
+            {{ padding }} {{ hoverBorderStyle }} {{ hoverRingStyle }}
+        {% else %}
+            text-gray-400
+        {% endif %}
+        rounded
+        bg-white
+        transition ease-in-out duration-100
+        {{ display }} {{ hoverTextStyle }} {{ fontSize }}
+        {% if class is defined %}{{ class }}{% endif %}
+    "
+>
+    {% if icon is defined %}
+        <i class="block {{ icon }} {% if iconClass is defined %}{{ iconClass }}{% endif %}"></i>
+    {% endif %}
+
+    {% if label is defined %}
+        <span {% if labelClass is defined %}class="ml-2 {{ labelClass }}"{% endif %}>{{ label }}</span>
+    {% endif %}
+</{{ tag }}>
