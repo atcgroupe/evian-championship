@@ -13,6 +13,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
     public const ROLE_PROJECT_MANAGER = 'ROLE_PROJECT_MANAGER';
+    public const ROLE_GRAPHIC_DESIGNER = 'ROLE_GRAPHIC_DESIGNER';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
