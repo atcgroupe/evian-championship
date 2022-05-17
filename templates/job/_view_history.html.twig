@@ -1,0 +1,30 @@
+{% if is_granted('ROLE_COMPANY_USER') %}
+    {# Title #}
+    <h2
+        class="
+            flex justify-between items-center
+            mt-12 p-3
+            border-l-8 border-prunoise
+            text-2xl text-prunoise
+            bg-gray-100
+            font-light
+        "
+    >
+        Historique
+    </h2>
+
+    {# Data #}
+    <div class="mt-4">
+        {% if job.jobFiles is not empty %}
+            {% for jobFile in job.jobFiles %}
+                <div class="p-3 border border-gray-400 rounded-md flex justify-between items-center">
+                    <div class="mr-3">{{ jobFile.sourceName }}</div>
+
+                    <div class="text-gray-400 italic">{{ jobFile.date|date('d/m/Y à h:m:s') }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center text-gray-400">Il n'y a aucun fichier pour ce job</div>
+        {% endif %}
+    </div>
+{% endif %}

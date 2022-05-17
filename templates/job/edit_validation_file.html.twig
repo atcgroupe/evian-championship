@@ -1,0 +1,54 @@
+{% extends 'core/core.html.twig' %}
+
+{% block main %}
+    <div class="max-w-screen-sm mx-auto">
+        <h1 class="text-2xl font-light text-center mb-8">Ajouter les BAT du job {{ job.customerReference }}</h1>
+
+        <div
+                class="
+                    p-5 my-6
+                    border border-blue-400 rounded-lg
+                    bg-blue-50
+                    text-blue-400
+                    flex items-center
+                "
+        >
+            <div><i class="fas fa-info text-3xl ml-3 mr-7"></i></div>
+
+            <div>
+                <p>
+                    Il est possible d'importer plusieurs BAT.<br>
+                    Les fichiers doivent être au format jpg/jpeg et au format 1684x1190px
+                </p>
+
+                <h2 class="text-xl font-bold mt-2 mb-1">Procédure d'enregistrement</h2>
+
+                <p>
+                    - Créer le BAT au format A4 avec le cartouche habituel.<br>
+                    - Sélectionnez "Enregistrer pour le web"
+                    <span class="border rounded-md border-gray-400 bg-gray-100 px-2">ALT</span> +
+                    <span class="border rounded-md border-gray-400 bg-gray-100 px-2">SHIFT</span> +
+                    <span class="border rounded-md border-gray-400 bg-gray-100 px-2">CMD</span> +
+                    <span class="border rounded-md border-gray-400 bg-gray-100 px-2">S</span><br>
+                    - Sélectionnez le format JPEG avec Qualité 100%<br>
+                    - Mettre le pourcentage à 200% dans Taille de l'image
+                </p>
+            </div>
+        </div>
+
+        {{ form_start(form, { attr: { 'novalidate': 'novalidate', 'class': 'max-w-screen-sm mx-auto' } }) }}
+        {{ form_widget(form) }}
+
+        <div class="grid gap-4 grid-cols-2 mt-8">
+            {{ include('component/button/button.html.twig', {
+                'href': path('job_view', { id: job.id }),
+                'label': 'Annuler',
+            }) }}
+
+            {{ include('component/button/button.html.twig', {
+                'label': 'Ajouter les BAT',
+            }) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
