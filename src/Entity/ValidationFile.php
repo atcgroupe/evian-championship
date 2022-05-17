@@ -11,6 +11,28 @@ class ValidationFile extends AbstractAppFile
 {
     private const PUBLIC_PATH = 'data/job/';
 
+    #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'validationFiles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $job;
+
+    public function __construct(Job $job, string $name, string $sourceName)
+    {
+        parent::__construct($name, $sourceName);
+        $this->setJob($job);
+    }
+
+    public function getJob(): ?Job
+    {
+        return $this->job;
+    }
+
+    public function setJob(?Job $job): self
+    {
+        $this->job = $job;
+
+        return $this;
+    }
+
     public function getType(): FileType
     {
         return FileType::VALIDATION;

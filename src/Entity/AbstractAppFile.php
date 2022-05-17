@@ -23,13 +23,8 @@ abstract class AbstractAppFile
     #[ORM\Column(type: 'datetime')]
     private $date;
 
-    #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'jobFiles')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $job;
-
-    public function __construct(Job $job, string $name, string $sourceName)
+    public function __construct(string $name, string $sourceName)
     {
-        $this->setJob($job);
         $this->setName($name);
         $this->setSourceName($sourceName);
 
@@ -78,18 +73,6 @@ abstract class AbstractAppFile
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getJob(): ?Job
-    {
-        return $this->job;
-    }
-
-    public function setJob(?Job $job): self
-    {
-        $this->job = $job;
 
         return $this;
     }
