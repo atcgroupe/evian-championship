@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DeliveryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +29,14 @@ class Delivery
 
     #[ORM\Column(type: 'text', nullable: true)]
     private $comment;
+
+    #[ORM\OneToMany(mappedBy: 'delivery', targetEntity: Job::class)]
+    private $jobs;
+
+    public function __construct()
+    {
+        $this->jobs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -67,5 +77,43 @@ class Delivery
         $this->comment = $comment;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Job>
+     */
+    public function getJobs(): Collection
+    {
+        return $this->jobs;
+    }
+
+    public function addJob(Job $job): self
+    {
+        if (!$this->jobs->contains($job)) {
+            $this->jobs[] = $job;
+            $job->setDelivery($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJob(Job $job): self
+    {
+        if ($this->jobs->removeElement($job)) {
+            // set the owning side to null (unless already changed)
+            if ($job->getDelivery() === $this) {
+                $job->setDelivery(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayName(): string
+    {
+        return $this->getTitle() . ' - ' . $this->getDate()->format('d/m');
     }
 }

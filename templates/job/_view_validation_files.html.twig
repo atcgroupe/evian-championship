@@ -1,0 +1,61 @@
+{# Title #}
+<div class="flex justify-between items-center mt-12 p-3 border-l-8 border-prunoise bg-gray-100">
+    <h2 class="text-2xl text-prunoise font-light">
+        Fichier(s) BAT.
+    </h2>
+
+    {# Option button #}
+    <div>
+        {% if is_granted('ADD_VALIDATION_FILE', job) %}
+            {% if job.validationFiles.empty %}
+                {% set jobFileLabel = 'Charger les fichiers' %}
+            {% else %}
+                {% set jobFileLabel = 'Charger un nouveau fichier' %}
+            {% endif %}
+            {{ include('component/button/button.html.twig', {
+                href: path('job_validation_file_add', { id: job.id }),
+                label: jobFileLabel,
+                labelClass: 'hidden md:block',
+                icon: 'fas fa-plus',
+                iconClass: 'py-1 md:hidden',
+                size: 'small'
+            }) }}
+        {% elseif is_granted('UPDATE_STATUS_FROM_APPROVAL', job) %}
+            {{ include('component/button/button.html.twig', {
+                href: path('job_view', { id: job.id }),
+                label: 'Vérifier le BAT',
+                labelClass: 'hidden md:block',
+                icon: 'fas fa-plus',
+                iconClass: 'py-1 md:hidden',
+                size: 'small'
+            }) }}
+        {% endif %}
+    </div>
+</div>
+
+{# Data #}
+<div class="mt-4">
+    {% if job.validationFiles is not empty %}
+        {% for file in job.validationFiles %}
+            <div class="p-3 border border-gray-400 rounded-md flex justify-between items-center mt-2">
+                <div class="mr-3">
+                    {{ file.sourceName }}
+                    <span class="text-gray-400 italic text-sm">(Ajouté le {{ file.date|date('d/m à H:i') }})</span>
+                </div>
+
+                <div>
+                    {% if is_granted('REMOVE_VALIDATION_FILE', job) %}
+                    <a
+                        href="{{ path('job_validation_file_remove', { id: job.id, fileId: file.id }) }}"
+                        class="hover:text-prunoise"
+                    >
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center text-gray-400">Il n'y a aucun BAT pour ce job</div>
+    {% endif %}
+</div>

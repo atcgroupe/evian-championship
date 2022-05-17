@@ -23,7 +23,7 @@ class Product
 
     #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
     #[Assert\NotBlank(message: 'Le prix est obligatoire')]
-    #[Assert\Regex('/^[1-9][0-9]{0,2}\.[0-9]{2}$/', message: 'Le prix doit être sous la forme 10.00')]
+    #[Assert\Regex('/^[1-9][0-9]{0,2}(\.[0-9]{2})?$/', message: 'Le prix doit être sous la forme 10.00')]
     private $price;
 
     #[ORM\Column(type: 'boolean')]
