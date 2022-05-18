@@ -146,6 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return match ($option) {
             'navbar' => substr($this->getFirstName(), 0, 1),
+            'log' => substr($this->getFirstName(), 0, 1) . '. ' . $this->getLastName(),
         };
     }
 }
