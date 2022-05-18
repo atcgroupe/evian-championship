@@ -32,6 +32,7 @@ class JobDeliveryController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->logManager->addDeliveryLog($job);
             $this->manager->flush();
             $this->addFlash(
                 'success',

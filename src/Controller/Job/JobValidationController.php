@@ -47,6 +47,7 @@ class JobValidationController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::APPROVED);
         $job->setStatus(JobStatus::APPROVED->getValue());
         $this->manager->flush();
 
@@ -85,6 +86,7 @@ class JobValidationController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::REJECTED);
             $job->setStatus(JobStatus::REJECTED->getValue());
             $this->manager->flush();
 
@@ -127,6 +129,7 @@ class JobValidationController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::CREATED);
         $job->setStatus(JobStatus::CREATED->getValue());
         $this->manager->flush();
 

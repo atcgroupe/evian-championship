@@ -75,6 +75,7 @@ class JobController extends AbstractJobController
             }
 
             $this->manager->persist($job);
+            $this->logManager->addLog($job, 'Création du job');
             $this->manager->flush();
             $this->addFlash(
                 'success',
@@ -112,6 +113,7 @@ class JobController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->logManager->addLog($job, 'Modification des informations.');
             $this->manager->flush();
             $this->addFlash(
                 'success',
