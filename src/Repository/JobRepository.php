@@ -83,6 +83,8 @@ class JobRepository extends ServiceEntityRepository
                 ->addSelect('files')
             ->leftJoin('j.validationFiles', 'validationFiles')
                 ->addSelect('validationFiles')
+            ->leftJoin('j.jobLogs', 'logs')
+                ->addSelect('logs')
             ->getQuery()
             ->getOneOrNullResult();
     }
