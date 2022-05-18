@@ -22,8 +22,10 @@ class JobStatusRequestController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
-        $job->setStatus(JobStatus::STANDBY->getValue());
         $job->setStandbyComment('Le client a demandé l\'annulation de ce job');
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::STANDBY);
+        $job->setStatus(JobStatus::STANDBY->getValue());
+
         $this->manager->flush();
 
         // Todo: send notification to COMPANY_USER
@@ -58,8 +60,10 @@ class JobStatusRequestController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
-        $job->setStatus(JobStatus::STANDBY->getValue());
         $job->setStandbyComment('Le client a demandé à modifier ce job');
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::STANDBY);
+        $job->setStatus(JobStatus::STANDBY->getValue());
+
         $this->manager->flush();
 
         // Todo: Send notification to COMPANY_USER

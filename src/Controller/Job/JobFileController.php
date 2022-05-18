@@ -56,6 +56,7 @@ class JobFileController extends AbstractJobController
                     return $this->redirectToRoute('job_view', ['id' => $id]);
                 }
 
+                $this->logManager->addLog($job, 'Ajout du fichier de production.');
                 $this->manager->flush();
                 $this->addFlash(
                     'success',
@@ -103,6 +104,7 @@ class JobFileController extends AbstractJobController
             $this->manager->persist($job);
 
             $this->fileManager->remove($file);
+            $this->logManager->addLog($job, 'Suppression du fichier de production.');
             $this->manager->flush();
 
             $this->addFlash(

@@ -50,6 +50,10 @@ class JobValidationFileController extends AbstractJobController
                     }
                 }
 
+                $this->logManager->addLog(
+                    $job,
+                    sprintf('Ajout %s BAT', (count($files) === 1) ? 'du fichier' : 'des fichiers')
+                );
                 $this->manager->flush();
                 $this->addFlash(
                     'success',
@@ -58,7 +62,6 @@ class JobValidationFileController extends AbstractJobController
                         $job->getCustomerReference()
                     )
                 );
-
             }
 
             return $this->redirectToRoute('job_view', ['id' => $id]);
@@ -93,6 +96,7 @@ class JobValidationFileController extends AbstractJobController
             $this->manager->persist($job);
 
             $this->fileManager->remove($file);
+            $this->logManager->addLog($job, "Suppression d'un fichier BAT");
             $this->manager->flush();
 
             $this->addFlash(

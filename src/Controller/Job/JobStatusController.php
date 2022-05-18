@@ -22,6 +22,7 @@ class JobStatusController extends AbstractJobController
     public function updateStatus(int $id, Request $request): Response
     {
         $job = $this->jobRepository->find($id);
+        $preStatus = JobStatus::from($job->getStatus());
 
         if (!$this->isGranted('UPDATE_STATUS', $job)) {
             $this->addFlash("danger", "Vous n'avez pas les droits pour changer le statut d'un job");
@@ -33,6 +34,7 @@ class JobStatusController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->logManager->addUpdateLog($job, $preStatus, JobStatus::from($job->getStatus()));
             $this->manager->flush();
             $this->addFlash(
                 'success',
@@ -68,8 +70,7 @@ class JobStatusController extends AbstractJobController
     public function updateFromCreatedToSent(int $id): Response
     {
         $job = $this->jobRepository->find($id);
-
-        if (!$this->isGranted('UPDATE_FROM_CREATED_TO_SENT', $job)) {
+        if (!$this->isGranted('UPDATE_STATUS_FROM_CREATED_TO_SENT', $job)) {
             $this->addFlash('danger',
                 "Ce job ne peut pas être envoyé à ATC pour l'une des raisons suivantes:<br>
                 - Vous n'avez pas les droits<br>
@@ -81,6 +82,7 @@ class JobStatusController extends AbstractJobController
         }
 
         $job->setStatus(JobStatus::SENT->getValue());
+        $this->logManager->addUpdateLog($job, JobStatus::CREATED, JobStatus::SENT);
         $this->manager->flush();
 
         // Todo: Add notification to GRAPHIC_DESIGNER
@@ -104,7 +106,7 @@ class JobStatusController extends AbstractJobController
      * @return Response
      */
     #[Route('/to-approval', name: '_update_to_approval')]
-    public function requestUpdateStatusToApproval(int $id): Response
+    public function updateStatusToApproval(int $id): Response
     {
         $job = $this->jobRepository->find($id);
 
@@ -114,6 +116,7 @@ class JobStatusController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::APPROVAL);
         $job->setStatus(JobStatus::APPROVAL->getValue());
         $job->setRejectComment(null);
         $this->manager->flush();
@@ -151,6 +154,7 @@ class JobStatusController extends AbstractJobController
         }
 
         $job->setStatus(JobStatus::PRODUCTION->getValue());
+        $this->logManager->addUpdateLog($job, JobStatus::APPROVED, JobStatus::PRODUCTION);
         $this->manager->flush();
         $this->addFlash(
             'success',
@@ -182,6 +186,7 @@ class JobStatusController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::CANCELED);
         $job->setStatus(JobStatus::CANCELED->getValue());
         $this->manager->flush();
 
@@ -217,6 +222,7 @@ class JobStatusController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
+        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::CREATED);
         $job->setStatus(JobStatus::CREATED->getValue());
         $job->setStandbyComment(null);
         $this->manager->flush();

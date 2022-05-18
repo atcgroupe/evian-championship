@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ValidationFileRepository::class)]
 class ValidationFile extends AbstractAppFile
 {
-    private const PUBLIC_PATH = 'data/job/';
+    private const PUBLIC_PATH = 'data/validation/';
 
     #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'validationFiles')]
     #[ORM\JoinColumn(nullable: false)]

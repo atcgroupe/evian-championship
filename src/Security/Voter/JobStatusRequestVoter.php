@@ -49,6 +49,7 @@ class JobStatusRequestVoter extends Voter
     {
         if (
             $this->security->isGranted('ROLE_CUSTOMER') &&
+            $this->job->getStatus() !== 3 &&
             $this->job->getStatus() > 1 &&
             $this->job->getStatus() < 7
         ) {
@@ -65,6 +66,7 @@ class JobStatusRequestVoter extends Voter
     {
         if (
             $this->security->isGranted('ROLE_CUSTOMER') &&
+            $this->job->getStatus() !== 3 &&
             $this->job->getStatus() > 1 &&
             $this->job->getStatus() < 6
         ) {

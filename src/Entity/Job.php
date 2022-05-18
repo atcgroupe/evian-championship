@@ -99,11 +99,15 @@ class Job
     #[ORM\OneToMany(mappedBy: 'job', targetEntity: ValidationFile::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $validationFiles;
 
+    #[ORM\OneToMany(mappedBy: 'job', targetEntity: JobLog::class,  cascade: ['persist', 'refresh', 'remove'], orphanRemoval: true)]
+    private $jobLogs;
+
     public function __construct()
     {
         $this->setDefaults();
         $this->jobFiles = new ArrayCollection();
         $this->validationFiles = new ArrayCollection();
+        $this->jobLogs = new ArrayCollection();
     }
 
     public function setDefaults()
@@ -446,5 +450,35 @@ class Job
     public function getDisplayStatus(): string
     {
         return JobStatus::from($this->getStatus())->getLabel();
+    }
+
+    /**
+     * @return Collection<int, JobLog>
+     */
+    public function getJobLogs(): Collection
+    {
+        return $this->jobLogs;
+    }
+
+    public function addJobLog(JobLog $jobLog): self
+    {
+        if (!$this->jobLogs->contains($jobLog)) {
+            $this->jobLogs[] = $jobLog;
+            $jobLog->setJob($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJobLog(JobLog $jobLog): self
+    {
+        if ($this->jobLogs->removeElement($jobLog)) {
+            // set the owning side to null (unless already changed)
+            if ($jobLog->getJob() === $this) {
+                $jobLog->setJob(null);
+            }
+        }
+
+        return $this;
     }
 }
