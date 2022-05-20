@@ -64,8 +64,6 @@
                     <th class="{{ theadCellClass }} sort" data-sort="product">PRODUIT</th>
                     <th class="{{ theadCellClass }} text-center w-10">FORMAT</th>
                     <th class="{{ theadCellClass }} text-center">QUANTITÉ</th>
-                    <th class="{{ theadCellClass }} text-center">P.U.</th>
-                    <th class="{{ theadCellClass }} text-center">P.T.</th>
                     <th class="{{ theadCellClass }} text-center">LIVRAISON</th>
                     <th class="{{ theadCellClass }} sort text-center" data-sort="status">STATUT</th>
                 </tr>
@@ -74,13 +72,13 @@
             <tbody class="list">
                 {% for job in jobs %}
                     {% if job.status == 9 %}
-                        {% set tbodyCellClass = 'p-3 font-light italic border border-gray-300 text-red-400' %}
+                        {% set tbodyCellClass = 'px-3 py-1.5 font-light italic border border-gray-300 text-red-400' %}
                         {% set hoverBgColor = 'red' %}
                     {% elseif job.status == 5 or job.status == 8 %}
-                        {% set tbodyCellClass = 'p-3 font-light italic border border-gray-300 text-orange-400' %}
+                        {% set tbodyCellClass = 'px-3 py-1.5 font-light italic border border-gray-300 text-orange-400' %}
                         {% set hoverBgColor = 'orange' %}
                     {% else %}
-                        {% set tbodyCellClass = 'p-3 font-light border border-gray-300 text-gray-500' %}
+                        {% set tbodyCellClass = 'px-3 py-1.5 font-light border border-gray-300 text-gray-500' %}
                         {% set hoverBgColor = 'gray' %}
                     {% endif %}
                 <tr
@@ -93,12 +91,9 @@
                     <td class="{{ tbodyCellClass }} product">{{ job.product.name }}</td>
                     <td class="{{ tbodyCellClass }} text-center w-10">{{ job.width }}x{{ job.height }}</td>
                     <td class="{{ tbodyCellClass }} text-center">{{ job.displayQuantity }}</td>
-                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayUnitPrice }}</td>
-                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayTotalPrice }}</td>
                     <td class="{{ tbodyCellClass }} text-center">
                         {% if job.delivery is not null %}
-                            {{ job.delivery.title }}<br>
-                            {{ job.delivery.date|date('d/m') }}
+                            {{ job.delivery.title }} <span class="italic">({{ job.delivery.date|date('d/m') }})</span>
                         {% else %}
                             attente
                         {% endif %}
