@@ -18,9 +18,9 @@
 {% set buttonType = 'submit' %}
 {% set padding = 'py-2 px-3' %}
 {% set fontSize = 'text-base' %}
-{% set hoverTextStyle = 'hover:text-gray-600' %}
-{% set hoverBorderStyle = '' %}
-{% set hoverRingStyle = 'hover:ring-4 ring-gray-200' %}
+{% set hoverTextStyle = 'hover:text-white' %}
+{% set hoverBorderStyle = 'hover:border-prunoise' %}
+{% set hoverRingStyle = 'hover:bg-prunoise' %}
 {% set display = 'inline-flex' %}
 
 {# tag #}
@@ -46,9 +46,9 @@
             {% set hoverBorderStyle = 'hover:border-blue-400' %}
             {% set hoverRingStyle = 'hover:ring-4 ring-blue-200' %}
         {% elseif style == 'danger' %}
-            {% set hoverTextStyle = 'hover:text-red-500' %}
+            {% set hoverTextStyle = 'hover:text-white' %}
             {% set hoverBorderStyle = 'hover:border-red-500' %}
-            {% set hoverRingStyle = 'hover:ring-4 ring-red-200' %}
+            {% set hoverRingStyle = 'hover:bg-red-500' %}
         {% endif %}
     {% endif %}
 
