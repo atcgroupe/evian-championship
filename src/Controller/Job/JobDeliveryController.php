@@ -2,6 +2,8 @@
 
 namespace App\Controller\Job;
 
+use App\Enum\JobEvent;
+use App\Event\AppJobEvent;
 use App\Form\JobDeliveryType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,8 +34,13 @@ class JobDeliveryController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->logManager->addDeliveryLog($job);
             $this->manager->flush();
+
+            $this->eventDispatcher->dispatch(
+                new AppJobEvent($job, JobEvent::DELIVERY_INFO_UPDATED),
+                JobEvent::DELIVERY_INFO_UPDATED->getEvent()
+            );
+
             $this->addFlash(
                 'success',
                 sprintf(

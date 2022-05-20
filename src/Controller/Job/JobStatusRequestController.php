@@ -2,7 +2,9 @@
 
 namespace App\Controller\Job;
 
+use App\Enum\JobEvent;
 use App\Enum\JobStatus;
+use App\Event\AppJobEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -13,6 +15,7 @@ class JobStatusRequestController extends AbstractJobController
     public function requestUpdateStatusToCanceled(int $id): Response
     {
         $job = $this->jobRepository->find($id);
+        $preStatus = $job->getJobStatus();
 
         if (!$this->isGranted('REQUEST_UPDATE_STATUS_TO_CANCELED', $job)) {
             $this->addFlash('danger',
@@ -23,12 +26,14 @@ class JobStatusRequestController extends AbstractJobController
         }
 
         $job->setStandbyComment('Le client a demandé l\'annulation de ce job');
-        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::STANDBY);
         $job->setStatus(JobStatus::STANDBY->getValue());
 
         $this->manager->flush();
 
-        // Todo: send notification to COMPANY_USER
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::REQUEST_CANCEL, $preStatus, JobStatus::STANDBY),
+            JobEvent::REQUEST_CANCEL->getEvent()
+        );
 
         $this->addFlash(
             'success',
@@ -51,6 +56,7 @@ class JobStatusRequestController extends AbstractJobController
     public function requestUpdateStatusToCreated(int $id): Response
     {
         $job = $this->jobRepository->find($id);
+        $preStatus = $job->getJobStatus();
 
         if (!$this->isGranted('REQUEST_UPDATE_STATUS_TO_CREATED', $job)) {
             $this->addFlash('danger',
@@ -61,12 +67,14 @@ class JobStatusRequestController extends AbstractJobController
         }
 
         $job->setStandbyComment('Le client a demandé à modifier ce job');
-        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::STANDBY);
         $job->setStatus(JobStatus::STANDBY->getValue());
 
         $this->manager->flush();
 
-        // Todo: Send notification to COMPANY_USER
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::REQUEST_UPDATE, $preStatus, JobStatus::STANDBY),
+            JobEvent::REQUEST_UPDATE->getEvent()
+        );
 
         $this->addFlash(
             'success',

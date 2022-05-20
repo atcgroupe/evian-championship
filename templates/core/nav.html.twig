@@ -63,7 +63,7 @@
 
                 {# User #}
                 <div class="hidden lg:block px-3.5 py-1.5 rounded-full bg-prunoise text-white text-xl">
-                    {{ app.user.displayName('navbar') }}
+                    <a href="{{ path('user_settings_index') }}">{{ app.user.displayName('navbar') }}</a>
                 </div>
 
                 {# Button for mobile menu #}
@@ -85,6 +85,11 @@
             {{ stimulus_target('navbar', 'mobile') }}
         >
             <ul>
+                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                    href: path('user_settings_index'),
+                    label: 'Paramètres utilisateur'
+                }) }}
+
                 {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
                     href: path('job_index'),
                     label: 'Suivi des jobs'

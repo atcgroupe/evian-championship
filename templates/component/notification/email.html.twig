@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet">
+
+    {{ include('component/notification/_email_style.html.twig') }}
+
+    <title>ATC Groupe Web2Print notification</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="icon-container text-prunoise">
+        <img src="{{ absolute_url('asset/paper-plane-solid.svg') }}" alt="Icone de notification">
+    </div>
+
+    <h1 class="text-center text-prunoise">JobFlow<br>Evian Championship | ATC Groupe</h1>
+
+    <h2 class="text-center fw-light mt-1">Notification*</h2>
+
+    <hr class="my-5">
+
+    <h2 class="h4 fw-light text-center">
+        {% if job.id is not null %}
+            <a href="{{ absolute_url(path('job_view', { id: job.id })) }}" class="job-title">{{ job.customerReference }}</a>
+        {% else %}
+            <span class="job-title">{{ job.customerReference }}</span>
+        {% endif %}
+    </h2>
+
+    <h3 class="fw-light text-center">{{ message }}</h3>
+
+    <hr class="mt-5">
+
+    <p class="text-muted fw-normal mb-5 text-small">
+        * Merci de ne pas répondre à ce mail. Celui-ci est utilisée uniquement pour envoyer des message.
+    </p>
+
+    <h2 class="h3 fw-light mb-3 ml-3 text-prunoise">Récapitulatif du job</h2>
+
+    <ul class="mb-3 bg-light">
+        <li>
+            <div>Référence du job</div>
+            <div>{{ job.customerReference }}</div>
+        </li>
+
+        <li>
+            <div>Emplacement</div>
+            <div>{{ job.location }}</div>
+        </li>
+
+        <li>
+            <div>Description</div>
+            <div>{{ job.description }}</div>
+        </li>
+
+        <li>
+            <div>Produit</div>
+            <div>{{ job.product.name }}</div>
+        </li>
+
+        <li>
+            <div>Format visible (mm)</div>
+            <div>{{ job.width }} x {{ job.height }}</div>
+        </li>
+
+        <li>
+            <div>Format total (mm)</div>
+            <div>{{ job.width + job.leftBleed + job.rightBleed }} x {{ job.height + job.topBleed + job.bottomBleed }}</div>
+        </li>
+
+        <li>
+            <div>Fond perdu (mm)</div>
+            <div>
+                <span class="text-prunoise">G</span>{{ job.leftBleed }} -
+                <span class="text-prunoise">D</span>{{ job.rightBleed }} -
+                <span class="text-prunoise">H</span>{{ job.topBleed }} -
+                <span class="text-prunoise">B</span>{{ job.bottomBleed }}
+            </div>
+        </li>
+
+        <li>
+            <div>Finition</div>
+            <div>{{ job.finish|nl2br }}</div>
+        </li>
+
+        <li>
+            <div>Nombre de visuels</div>
+            <div>{{ job.imageCount }}</div>
+        </li>
+
+        <li>
+            <div>Quantité par visuel</div>
+            <div>{{ job.imageQuantity }}</div>
+        </li>
+
+        <li>
+            <div>Quantité totale</div>
+            <div>{{ job.imageQuantity * job.imageCount }}</div>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

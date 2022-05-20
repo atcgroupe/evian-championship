@@ -2,8 +2,11 @@
 
 namespace App\Controller\Job;
 
+use App\Enum\JobEvent;
 use App\Enum\JobStatus;
+use App\Event\AppJobEvent;
 use App\Form\JobStatusType;
+use App\Service\Notification\NotificationDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,10 +22,10 @@ class JobStatusController extends AbstractJobController
      * @return Response
      */
     #[Route('/update', name: '_update')]
-    public function updateStatus(int $id, Request $request): Response
+    public function updateStatus(int $id, Request $request, NotificationDispatcher $dispatcher): Response
     {
         $job = $this->jobRepository->find($id);
-        $preStatus = JobStatus::from($job->getStatus());
+        $preStatus = $job->getJobStatus();
 
         if (!$this->isGranted('UPDATE_STATUS', $job)) {
             $this->addFlash("danger", "Vous n'avez pas les droits pour changer le statut d'un job");
@@ -34,7 +37,6 @@ class JobStatusController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->logManager->addUpdateLog($job, $preStatus, JobStatus::from($job->getStatus()));
             $this->manager->flush();
             $this->addFlash(
                 'success',
@@ -44,7 +46,10 @@ class JobStatusController extends AbstractJobController
                 )
             );
 
-            // Todo: Add customer e-mail notification
+            $this->eventDispatcher->dispatch(
+                New AppJobEvent($job, JobEvent::STATUS_UPDATED, $preStatus, JobStatus::from($job->getStatus())),
+                JobEvent::STATUS_UPDATED->getEvent()
+            );
 
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
@@ -82,10 +87,12 @@ class JobStatusController extends AbstractJobController
         }
 
         $job->setStatus(JobStatus::SENT->getValue());
-        $this->logManager->addUpdateLog($job, JobStatus::CREATED, JobStatus::SENT);
         $this->manager->flush();
 
-        // Todo: Add notification to GRAPHIC_DESIGNER
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::SENT, JobStatus::CREATED, JobStatus::SENT),
+            JobEvent::SENT->getEvent()
+        );
 
         $this->addFlash(
             'success',
@@ -109,6 +116,7 @@ class JobStatusController extends AbstractJobController
     public function updateStatusToApproval(int $id): Response
     {
         $job = $this->jobRepository->find($id);
+        $preStatus = $job->getJobStatus();
 
         if (!$this->isGranted('UPDATE_STATUS_FROM_SENT_TO_APPROVAL', $job)) {
             $this->addFlash('danger', "Vous n'avez pas les droits pour la validation d'un BAT.");
@@ -116,10 +124,14 @@ class JobStatusController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
-        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::APPROVAL);
         $job->setStatus(JobStatus::APPROVAL->getValue());
         $job->setRejectComment(null);
         $this->manager->flush();
+
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::APPROVAL, $preStatus, JobStatus::APPROVAL),
+            JobEvent::APPROVAL->getEvent()
+        );
 
         $this->addFlash(
             'success',
@@ -154,8 +166,13 @@ class JobStatusController extends AbstractJobController
         }
 
         $job->setStatus(JobStatus::PRODUCTION->getValue());
-        $this->logManager->addUpdateLog($job, JobStatus::APPROVED, JobStatus::PRODUCTION);
         $this->manager->flush();
+
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::PRODUCTION, JobStatus::APPROVED, JobStatus::PRODUCTION),
+            JobEvent::PRODUCTION->getEvent()
+        );
+
         $this->addFlash(
             'success',
             sprintf(
@@ -177,6 +194,7 @@ class JobStatusController extends AbstractJobController
     public function cancel(int $id): Response
     {
         $job = $this->jobRepository->find($id);
+        $preStatus = $job->getJobStatus();
 
         if (!$this->isGranted('UPDATE_STATUS_TO_CANCELED', $job)) {
             $this->addFlash('danger',
@@ -186,11 +204,13 @@ class JobStatusController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
-        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::CANCELED);
         $job->setStatus(JobStatus::CANCELED->getValue());
         $this->manager->flush();
 
-        // Todo: Add notification to CUSTOMER
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::CANCELED, $preStatus, JobStatus::CANCELED),
+            JobEvent::CANCELED->getEvent()
+        );
 
         $this->addFlash(
             'success',
@@ -213,6 +233,7 @@ class JobStatusController extends AbstractJobController
     public function sendToCustomer(int $id): Response
     {
         $job = $this->jobRepository->find($id);
+        $preStatus = $job->getJobStatus();
 
         if (!$this->isGranted('UPDATE_STATUS_TO_CREATED', $job)) {
             $this->addFlash('danger',
@@ -222,12 +243,14 @@ class JobStatusController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
-        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::CREATED);
         $job->setStatus(JobStatus::CREATED->getValue());
         $job->setStandbyComment(null);
         $this->manager->flush();
 
-        // Todo: Add notification to CUSTOMER
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::SENT_FOR_UPDATE, $preStatus, JobStatus::CREATED),
+            JobEvent::SENT_FOR_UPDATE->getEvent()
+        );
 
         $this->addFlash(
             'success',

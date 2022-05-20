@@ -8,6 +8,7 @@ use App\Service\JobLogManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractJobController extends AbstractController
 {
@@ -18,6 +19,7 @@ abstract class AbstractJobController extends AbstractController
         private ManagerRegistry $registry,
         protected AppFileManager $fileManager,
         protected JobLogManager $logManager,
+        protected EventDispatcherInterface $eventDispatcher,
     ) {
         $this->manager = $this->registry->getManager();
     }

@@ -4,6 +4,8 @@ namespace App\Controller\Job;
 
 use App\Entity\JobFile;
 use App\Enum\FileType;
+use App\Enum\JobEvent;
+use App\Event\AppJobEvent;
 use App\Form\JobFileType;
 use App\Repository\JobFileRepository;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -56,8 +58,13 @@ class JobFileController extends AbstractJobController
                     return $this->redirectToRoute('job_view', ['id' => $id]);
                 }
 
-                $this->logManager->addLog($job, 'Ajout du fichier de production.');
                 $this->manager->flush();
+
+                $this->eventDispatcher->dispatch(
+                    new AppJobEvent($job, JobEvent::JOB_FILE_ADDED),
+                    JobEvent::JOB_FILE_ADDED->getEvent()
+                );
+
                 $this->addFlash(
                     'success',
                     sprintf(
@@ -102,10 +109,13 @@ class JobFileController extends AbstractJobController
         try {
             $job->removeJobFile($file);
             $this->manager->persist($job);
-
             $this->fileManager->remove($file);
-            $this->logManager->addLog($job, 'Suppression du fichier de production.');
             $this->manager->flush();
+
+            $this->eventDispatcher->dispatch(
+                new AppJobEvent($job, JobEvent::JOB_FILE_REMOVED),
+                JobEvent::JOB_FILE_REMOVED->getEvent()
+            );
 
             $this->addFlash(
                 'success',

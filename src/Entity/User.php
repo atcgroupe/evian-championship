@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,6 +36,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 100)]
     private $lastName;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserEventNotification::class, orphanRemoval: true)]
+    private $eventNotifications;
+
+    public function __construct()
+    {
+        $this->eventNotifications = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -147,6 +157,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return match ($option) {
             'navbar' => substr($this->getFirstName(), 0, 1),
             'log' => substr($this->getFirstName(), 0, 1) . '. ' . $this->getLastName(),
+            'complete' => ucfirst($this->getFirstName() . ' ' . $this->getLastName()),
         };
+    }
+
+    /**
+     * @return Collection<int, UserEventNotification>
+     */
+    public function getEventNotifications(): Collection
+    {
+        return $this->eventNotifications;
+    }
+
+    public function addEventNotification(UserEventNotification $eventNotification): self
+    {
+        if (!$this->eventNotifications->contains($eventNotification)) {
+            $this->eventNotifications[] = $eventNotification;
+            $eventNotification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventNotification(UserEventNotification $eventNotification): self
+    {
+        if ($this->eventNotifications->removeElement($eventNotification)) {
+            // set the owning side to null (unless already changed)
+            if ($eventNotification->getUser() === $this) {
+                $eventNotification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEventNotificationStatus(int $value)
+    {
+
     }
 }

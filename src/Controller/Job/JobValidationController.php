@@ -2,7 +2,9 @@
 
 namespace App\Controller\Job;
 
+use App\Enum\JobEvent;
 use App\Enum\JobStatus;
+use App\Event\AppJobEvent;
 use App\Form\JobRejectType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,11 +49,13 @@ class JobValidationController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
-        $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::APPROVED);
         $job->setStatus(JobStatus::APPROVED->getValue());
         $this->manager->flush();
 
-        // ToDo: Send notification to COMPANY_USER
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::APPROVED, JobStatus::APPROVAL, JobStatus::APPROVED),
+            JobEvent::APPROVED->getEvent()
+        );
 
         $this->addFlash(
             'success',
@@ -86,11 +90,13 @@ class JobValidationController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::REJECTED);
             $job->setStatus(JobStatus::REJECTED->getValue());
             $this->manager->flush();
 
-            // ToDo: Send notification to COMPANY_USER
+            $this->eventDispatcher->dispatch(
+                new AppJobEvent($job, JobEvent::REJECTED, JobStatus::APPROVAL, JobStatus::REJECTED),
+                JobEvent::REJECTED->getEvent()
+            );
 
             $this->addFlash(
                 'warning',
@@ -133,7 +139,10 @@ class JobValidationController extends AbstractJobController
         $job->setStatus(JobStatus::CREATED->getValue());
         $this->manager->flush();
 
-        // ToDo: Send mail notification to graphic designer
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::UPDATE, JobStatus::APPROVAL, JobStatus::CREATED),
+            JobEvent::UPDATE->getEvent()
+        );
 
         $this->addFlash(
             'warning',

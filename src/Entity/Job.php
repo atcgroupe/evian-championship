@@ -401,6 +401,36 @@ class Job
     }
 
     /**
+     * @return Collection<int, JobLog>
+     */
+    public function getJobLogs(): Collection
+    {
+        return $this->jobLogs;
+    }
+
+    public function addJobLog(JobLog $jobLog): self
+    {
+        if (!$this->jobLogs->contains($jobLog)) {
+            $this->jobLogs[] = $jobLog;
+            $jobLog->setJob($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJobLog(JobLog $jobLog): self
+    {
+        if ($this->jobLogs->removeElement($jobLog)) {
+            // set the owning side to null (unless already changed)
+            if ($jobLog->getJob() === $this) {
+                $jobLog->setJob(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDisplayQuantity(): string
@@ -453,32 +483,10 @@ class Job
     }
 
     /**
-     * @return Collection<int, JobLog>
+     * @return JobStatus
      */
-    public function getJobLogs(): Collection
+    public function getJobStatus(): JobStatus
     {
-        return $this->jobLogs;
-    }
-
-    public function addJobLog(JobLog $jobLog): self
-    {
-        if (!$this->jobLogs->contains($jobLog)) {
-            $this->jobLogs[] = $jobLog;
-            $jobLog->setJob($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJobLog(JobLog $jobLog): self
-    {
-        if ($this->jobLogs->removeElement($jobLog)) {
-            // set the owning side to null (unless already changed)
-            if ($jobLog->getJob() === $this) {
-                $jobLog->setJob(null);
-            }
-        }
-
-        return $this;
+        return JobStatus::from($this->getStatus());
     }
 }

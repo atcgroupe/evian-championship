@@ -4,6 +4,8 @@ namespace App\Controller\Job;
 
 use App\Entity\ValidationFile;
 use App\Enum\FileType;
+use App\Enum\JobEvent;
+use App\Event\AppJobEvent;
 use App\Form\JobValidationFileType;
 use App\Repository\ValidationFileRepository;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -50,11 +52,13 @@ class JobValidationFileController extends AbstractJobController
                     }
                 }
 
-                $this->logManager->addLog(
-                    $job,
-                    sprintf('Ajout %s BAT', (count($files) === 1) ? 'du fichier' : 'des fichiers')
-                );
                 $this->manager->flush();
+
+                $this->eventDispatcher->dispatch(
+                    new AppJobEvent($job, JobEvent::VALIDATION_FILE_ADDED),
+                    JobEvent::VALIDATION_FILE_ADDED->getEvent()
+                );
+
                 $this->addFlash(
                     'success',
                     sprintf(
@@ -96,8 +100,12 @@ class JobValidationFileController extends AbstractJobController
             $this->manager->persist($job);
 
             $this->fileManager->remove($file);
-            $this->logManager->addLog($job, "Suppression d'un fichier BAT");
             $this->manager->flush();
+
+            $this->eventDispatcher->dispatch(
+                new AppJobEvent($job, JobEvent::VALIDATION_FILE_REMOVED),
+                JobEvent::VALIDATION_FILE_REMOVED->getEvent()
+            );
 
             $this->addFlash(
                 'success',

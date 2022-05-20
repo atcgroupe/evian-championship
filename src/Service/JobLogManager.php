@@ -30,6 +30,7 @@ class JobLogManager
         $log = new JobLog($job, $this->security->getUser(), $action);
         $job->addJobLog($log);
         $this->manager->persist($log);
+        $this->manager->flush();
     }
 
     /**
