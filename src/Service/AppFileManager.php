@@ -3,10 +3,12 @@
 namespace App\Service;
 
 use App\Entity\AbstractAppFile;
+use App\Entity\Job;
 use App\Enum\FileType;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use ZipArchive;
 
 class AppFileManager
 {
@@ -47,6 +49,38 @@ class AppFileManager
     }
 
     /**
+     * @param AbstractAppFile $file
+     * @return string
+     */
+    public function getPath(AbstractAppFile $file): string
+    {
+        return $this->getFileDir($file->getType()) . '/' . $file->getName();
+    }
+
+    /**
+     * @param Job $job
+     * @return string|false
+     */
+    public function getValidationFilesZip(Job $job): string|false
+    {
+        if (count($job->getValidationFiles()) === 0) {
+            return false;
+        }
+
+        $zip = new ZipArchive();
+        $file = tempnam(sys_get_temp_dir(), 'order_xml_zip');
+        $zip->open($file, ZipArchive::CREATE);
+
+        foreach ($job->getValidationFiles() as $validationFile) {
+            $zip->addFile($this->getPath($validationFile), $validationFile->getSourceName());
+        }
+
+        $zip->close();
+
+        return $file;
+    }
+
+    /**
      * @param UploadedFile $file
      * @return string
      */
@@ -66,6 +100,10 @@ class AppFileManager
         return pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
     }
 
+    /**
+     * @param FileType $type
+     * @return string
+     */
     private function getFileDir(FileType $type): string
     {
         return match ($type) {
