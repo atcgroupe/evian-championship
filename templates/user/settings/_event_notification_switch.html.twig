@@ -1,0 +1,18 @@
+<div
+        class="flex items-center justify-start pl-4 py-2 mb-4 hover:bg-gray-100 rounded-md"
+        data-controller="notification"
+        data-action="click->notification#toggle"
+        data-addroute="{{ path('user_settings_notification_add', { event: eventId }) }}"
+        data-removeroute="{{ path('user_settings_notification_remove', { event: eventId }) }}"
+        data-state="{{ state }}" {# 0 or 1 #}
+>
+    <div class="rounded-full min-w-[40px] h-[20px] ring-2 ring-gray-200 mr-3">
+        <div
+            data-notification-target="button"
+            class="rounded-full h-full w-[20px] border-2 border-gray-300 shadow-sm"
+        >
+        </div>
+    </div>
+
+    <div class="text-gray-400">{{ label }}</div>
+</div>
