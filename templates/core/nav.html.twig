@@ -33,6 +33,11 @@
 
                     {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_ADMIN') %}
                     {{ include('component/nav/navbar_menu_item.html.twig', {
+                        href: path('job_reporting'),
+                        label: 'Reporting'
+                    }) }}
+
+                    {{ include('component/nav/navbar_menu_item.html.twig', {
                         href: path('job_create'),
                         label: 'nouveau job'
                     }) }}
@@ -96,6 +101,11 @@
                 }) }}
 
                 {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_ADMIN') %}
+                {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                    href: path('job_reporting'),
+                    label: 'Reporting'
+                }) }}
+
                 {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
                     href: path('job_create'),
                     label: 'Nouveau job'

@@ -455,7 +455,7 @@ class Job
      */
     public function getDisplayUnitPrice(): string
     {
-        return number_format(round($this->getUnitPrice(), 2), 2, ',', ' ');
+        return number_format(round($this->getUnitPrice(), 2), 2, '.', ' ');
     }
 
     /**

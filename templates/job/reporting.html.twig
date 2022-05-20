@@ -7,36 +7,51 @@
 {% endblock %}
 
 {% block main %}
-    <div id="joblist">
+    <div id="joblist" class="max-w-screen-xl mx-auto">
 
         {# Title #}
         <h1 class="text-3xl font-light text-center mt-6">
-            <span class="px-2 border border-prunoise rounded-md text-prunoise">Suivi des jobs</span>
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">Reporting</span>
         </h1>
 
-        <div class="w-full max-w-screen-md mx-auto mt-12">
+        <div class="mt-12 p-3 border-l-8 border-prunoise bg-gray-100 rounded-tl-xl rounded-br-xl flex flex-col md:flex-row justify-between md:items-center">
+            <h2 class="text-2xl text-prunoise font-light">
+                Budget global
+            </h2>
+
+            <div class="text-2xl text-prunoise">
+                {{ globalBudget }}€
+            </div>
+        </div>
+
+        <div class="mt-12 p-3 border-l-8 border-prunoise bg-gray-100 rounded-tl-xl rounded-br-xl flex justify-between items-center">
+            <h2 class="text-2xl text-prunoise font-light">
+                Detail par job
+            </h2>
+
             <div
-                class="
+                    class="
                     flex justify-start items-center
-                    py-3 px-5
-                    w-full
+                    py-2 px-5
+                    w-1/2
+                    bg-white
                     border border-gray-400 focus:border-prunoise
                     rounded-full
-                    shadow-md
+                    shadow-sm
                 "
             >
                 <div>
-                    <i class="fas fa-search text-xl md:text-3xl text-gray-300 md:ml-2 mr-2 md:mr-4"></i>
+                    <i class="fas fa-search text-xl md:text-2xl text-gray-300 md:ml-2 mr-2 md:mr-4"></i>
                 </div>
 
                 <div class="w-full">
                     <input
-                        type="search"
-                        placeholder="Recherchez un job par nom, statut, emplacement, ..."
-                        class="
+                            type="search"
+                            placeholder="Recherchez un job par nom, statut, emplacement, ..."
+                            class="
                             search
                             w-full
-                            md:text-xl font-light
+                            font-light
                             text-prunoise
                             outline outline-transparent
                         "
@@ -45,13 +60,13 @@
             </div>
         </div>
 
-        {% set theadCellClass = 'px-3 py-4 font-medium border border-gray-300 text-gray-700 text-left' %}
+            {% set theadCellClass = 'px-3 py-3 font-medium border border-gray-300 text-gray-700 text-left' %}
 
         {% if jobs is not empty %}
         <table
             class="
-                mx-auto
-                mt-12
+                w-full
+                mt-8
                 border-collapse border border-gray-300
                 text-sm
             "
@@ -64,21 +79,21 @@
                     <th class="{{ theadCellClass }} sort" data-sort="product">PRODUIT</th>
                     <th class="{{ theadCellClass }} text-center w-10">FORMAT</th>
                     <th class="{{ theadCellClass }} text-center">QUANTITÉ</th>
-                    <th class="{{ theadCellClass }} text-center">LIVRAISON</th>
-                    <th class="{{ theadCellClass }} sort text-center" data-sort="status">STATUT</th>
+                    <th class="{{ theadCellClass }} text-center">P.U.</th>
+                    <th class="{{ theadCellClass }} text-center">P.T.</th>
                 </tr>
             </thead>
 
             <tbody class="list">
                 {% for job in jobs %}
                     {% if job.status == 9 %}
-                        {% set tbodyCellClass = 'px-3 py-1.5 font-light italic border border-gray-300 text-red-400' %}
+                        {% set tbodyCellClass = 'px-2 py-1 font-light italic border border-gray-300 text-red-400' %}
                         {% set hoverBgColor = 'red' %}
                     {% elseif job.status == 5 or job.status == 8 %}
-                        {% set tbodyCellClass = 'px-3 py-1.5 font-light italic border border-gray-300 text-orange-400' %}
+                        {% set tbodyCellClass = 'px-2 py-1 font-light italic border border-gray-300 text-orange-400' %}
                         {% set hoverBgColor = 'orange' %}
                     {% else %}
-                        {% set tbodyCellClass = 'px-3 py-1.5 font-light border border-gray-300 text-gray-500' %}
+                        {% set tbodyCellClass = 'px-2 py-1 font-light border border-gray-300 text-gray-500' %}
                         {% set hoverBgColor = 'gray' %}
                     {% endif %}
                 <tr
@@ -91,14 +106,8 @@
                     <td class="{{ tbodyCellClass }} product">{{ job.product.name }}</td>
                     <td class="{{ tbodyCellClass }} text-center w-10">{{ job.width }}x{{ job.height }}</td>
                     <td class="{{ tbodyCellClass }} text-center">{{ job.displayQuantity }}</td>
-                    <td class="{{ tbodyCellClass }} text-center">
-                        {% if job.delivery is not null %}
-                            {{ job.delivery.title }} <span class="italic">({{ job.delivery.date|date('d/m') }})</span>
-                        {% else %}
-                            attente
-                        {% endif %}
-                    </td>
-                    <td class="{{ tbodyCellClass }} status text-center">{{ job.displayStatus}}</td>
+                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayUnitPrice }}</td>
+                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayTotalPrice }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
