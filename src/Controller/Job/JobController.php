@@ -4,7 +4,9 @@ namespace App\Controller\Job;
 
 use App\Entity\Job;
 use App\Entity\JobFile;
+use App\Enum\JobEvent;
 use App\Enum\FileType;
+use App\Event\AppJobEvent;
 use App\Form\JobCreateType;
 use App\Form\JobUpdateType;
 use App\Repository\DeliveryRepository;
@@ -75,8 +77,10 @@ class JobController extends AbstractJobController
             }
 
             $this->manager->persist($job);
-            $this->logManager->addLog($job, 'Création du job');
             $this->manager->flush();
+
+            $this->eventDispatcher->dispatch(new AppJobEvent($job, JobEvent::CREATED), JobEvent::CREATED->getEvent());
+
             $this->addFlash(
                 'success',
                 sprintf(
@@ -113,8 +117,13 @@ class JobController extends AbstractJobController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->logManager->addLog($job, 'Modification des informations.');
             $this->manager->flush();
+
+            $this->eventDispatcher->dispatch(
+                new AppJobEvent($job, JobEvent::INFO_UPDATED),
+                JobEvent::INFO_UPDATED->getEvent()
+            );
+
             $this->addFlash(
                 'success',
                 sprintf(
@@ -154,6 +163,9 @@ class JobController extends AbstractJobController
 
         $this->manager->remove($job);
         $this->manager->flush();
+
+        $this->eventDispatcher->dispatch(new AppJobEvent($job, JobEvent::DELETED), JobEvent::DELETED->getEvent());
+
         $this->addFlash(
             'success',
             sprintf(
