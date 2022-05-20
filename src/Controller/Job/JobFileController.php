@@ -8,10 +8,14 @@ use App\Enum\JobEvent;
 use App\Event\AppJobEvent;
 use App\Form\JobFileType;
 use App\Repository\JobFileRepository;
+use App\Service\AppFileManager;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/job/{id}/job-file', name: 'job_jobfile')]
@@ -132,5 +136,18 @@ class JobFileController extends AbstractJobController
 
             return $this->redirectToRoute('job_view', ['id' => $job->getId()]);
         }
+    }
+
+    #[Route('/{fileId}/download', name: '_download')]
+    public function download(
+        int $fileId,
+        JobFileRepository $fileRepository,
+        AppFileManager $fileManager
+    ): BinaryFileResponse {
+        $file = $fileRepository->findWithRelations($fileId);
+        $response = new BinaryFileResponse($fileManager->getPath($file));
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $file->getSourceName());
+
+        return $response;
     }
 }

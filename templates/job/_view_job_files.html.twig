@@ -1,6 +1,6 @@
 
 {# Title #}
-<div class="flex justify-between items-center mt-12 p-3 border-l-8 border-prunoise bg-gray-100">
+<div class="flex justify-between items-center mt-12 px-3 py-5 rounded-r-xl border-l-8 border-prunoise bg-gray-100">
     <h2 class="text-2xl text-prunoise font-light">
         Fichier de production
     </h2>
@@ -9,7 +9,7 @@
     <div>
         {% if is_granted('ADD_JOB_FILE', job) %}
             {% if job.jobFiles.empty %}
-                {% set jobFileLabel = 'Charger un fichier' %}
+                {% set jobFileLabel = 'Charger le fichier' %}
             {% else %}
                 {% set jobFileLabel = 'Charger un nouveau fichier' %}
             {% endif %}
@@ -17,8 +17,8 @@
                 href: path('job_jobfile_upload', { id: job.id }),
                 label: jobFileLabel,
                 labelClass: 'hidden md:block',
-                icon: 'fas fa-plus',
-                iconClass: 'py-1 md:hidden',
+                icon: 'fas fa-upload',
+                iconClass: 'py-1',
                 size: 'small'
             }) }}
         {% endif %}
@@ -29,13 +29,27 @@
 <div class="mt-4">
     {% if job.jobFiles is not empty %}
         {% for jobFile in job.jobFiles %}
-            <div class="p-3 border border-gray-400 rounded-md flex justify-between items-center mt-2">
-                <div class="mr-3">
-                    {{ jobFile.sourceName }}
-                    <span class="text-gray-400 italic text-sm">(Ajouté le {{ jobFile.date|date('d/m à H:i') }})</span>
+            <div class="flex justify-between items-center px-3 mt-2 rounded-md hover:bg-gray-100">
+                <div class="py-1 flex justify-start items-center">
+                    <div><i class="fas fa-angle-right text-2xl mx-2 text-blue-400"></i></div>
+
+                    <div>
+                        <div class="mr-3 text-gray-700">{{ jobFile.sourceName }}</div>
+
+                        <div class="text-gray-400 text-xs italic">
+                            Ajouté le {{ jobFile.date|date('d/m à H:i') }}
+                        </div>
+                    </div>
                 </div>
 
                 <div>
+                    <a
+                        href="{{ path('job_jobfile_download', { id: job.id, fileId: jobFile.id }) }}"
+                        class="mr-3 hover:text-prunoise"
+                    >
+                        <i class="fas fa-download"></i>
+                    </a>
+
                     {% if is_granted('REMOVE_JOB_FILE', job) %}
                         <a
                             href="{{ path('job_jobfile_remove', { id: job.id, fileId: jobFile.id }) }}"

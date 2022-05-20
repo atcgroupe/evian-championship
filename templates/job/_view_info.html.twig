@@ -1,5 +1,5 @@
 {# Title #}
-<div class="flex justify-between items-center mt-12 p-3 border-l-8 border-prunoise bg-gray-100">
+<div class="flex justify-between items-center mt-12 px-3 py-5 rounded-r-xl border-l-8 border-prunoise bg-gray-100">
     <h2 class="text-2xl text-prunoise font-light">
         Informations sur le job
     </h2>
@@ -17,62 +17,94 @@
 </div>
 
 {# Data #}
-{% set refColClass = 'bg-gray-100 p-2 border md:border-r-0 border-b-0 md:border-b border-gray-400 text-gray-500' %}
-{% set valueColClass = ' p-2 border border-gray-400 mb-2 md:mb-0' %}
-<div class="grid grid-cols-1 md:grid-cols-3 mt-4 md:gap-y-2">
-    <div class="{{ refColClass }}">REF</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.customerReference }}</div>
+{% set refCellClass = 'px-2 py-2 border border-gray-300 text-gray-700 text-left bg-gray-100' %}
+{% set dataCellClass = 'px-2 border border-gray-300 text-gray-500 md:col-span-2' %}
+<table
+    class="
+        w-full
+        mt-3
+        border-collapse border border-gray-300
+    "
+>
+    <tbody>
+        <tr>
+            <td class="{{ refCellClass }}">REF</td>
+            <td class="{{ dataCellClass }}">{{ job.customerReference }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">EMPLACEMENT</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.location }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">EMPLACEMENT</td>
+            <td class="{{ dataCellClass }}">{{ job.location }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">DESCRIPTIF</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.description }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">DESCRIPTIF</td>
+            <td class="{{ dataCellClass }}">{{ job.description }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">PRODUIT</div>
-    <div class="{{ valueColClass }} col-span-2">
-        {{ job.product.name }} <span class="italic text-gray-400">({{ job.product.price }}€/m2)</span>
-    </div>
+        <tr>
+            <td class="{{ refCellClass }}">PRODUIT</td>
+            <td class="{{ dataCellClass }}">
+                {{ job.product.name }} <span class="italic text-gray-400">({{ job.product.price }}€/m2)</span>
+            </td>
+        </tr>
 
-    <div class="{{ refColClass }}">FORMAT VISIBLE (mm)</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.width }} x {{ job.height }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">FORMAT VISIBLE (mm)</td>
+            <td class="{{ dataCellClass }}">{{ job.width }} x {{ job.height }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">FORMAT TOTAL (mm)</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.width + job.leftBleed + job.rightBleed }} x {{ job.height + job.topBleed + job.bottomBleed }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">FORMAT TOTAL (mm)</td>
+            <td class="{{ dataCellClass }}">
+                {{ job.width + job.leftBleed + job.rightBleed }} x {{ job.height + job.topBleed + job.bottomBleed }}
+            </td>
+        </tr>
 
-    <div class="{{ refColClass }}">FOND PERDU (mm)</div>
-    <div class="{{ valueColClass }} col-span-2">
-        <span class="text-prunoise">G</span>{{ job.leftBleed }} -
-        <span class="text-prunoise">D</span>{{ job.rightBleed }} -
-        <span class="text-prunoise">H</span>{{ job.topBleed }} -
-        <span class="text-prunoise">B</span>{{ job.bottomBleed }}
-    </div>
+        <tr>
+            <td class="{{ refCellClass }}">FOND PERDU (mm)</td>
+            <td class="{{ dataCellClass }}">
+                <span class="text-prunoise">G</span>{{ job.leftBleed }} -
+                <span class="text-prunoise">D</span>{{ job.rightBleed }} -
+                <span class="text-prunoise">H</span>{{ job.topBleed }} -
+                <span class="text-prunoise">B</span>{{ job.bottomBleed }}
+            </td>
+        </tr>
 
-    <div class="{{ refColClass }}">FINITION</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.finish|nl2br }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">FINITION</td>
+            <td class="{{ dataCellClass }}">{{ job.finish|nl2br }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">VISUELS</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.imageCount }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">VISUELS</td>
+            <td class="{{ dataCellClass }}">{{ job.imageCount }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">EXEMPLAIRES</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.imageQuantity }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">EXEMPLAIRES</td>
+            <td class="{{ dataCellClass }}">{{ job.imageQuantity }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">TOTAL</div>
-    <div class="{{ valueColClass }} col-span-2">{{ job.imageQuantity * job.imageCount }}</div>
+        <tr>
+            <td class="{{ refCellClass }}">QTE TOTALE</td>
+            <td class="{{ dataCellClass }}">{{ job.imageQuantity * job.imageCount }}</td>
+        </tr>
 
-    <div class="{{ refColClass }}">PRIX UNITAIRE</div>
-    <div class="{{ valueColClass }} col-span-2">
-        {{ job.displayUnitPrice }}€
-    </div>
+        <tr>
+            <td class="{{ refCellClass }}">PRIX UNITAIRE</td>
+            <td class="{{ dataCellClass }}">{{ job.displayUnitPrice }}€</td>
+        </tr>
 
-    <div class="{{ refColClass }}">PRIX TOTAL</div>
-    <div class="{{ valueColClass }} col-span-2">
-        {{ job.displayTotalPrice }}€
-    </div>
-</div>
+        <tr>
+            <td class="{{ refCellClass }}">PRIX TOTAL</td>
+            <td class="{{ dataCellClass }}">{{ job.displayTotalPrice }}€</td>
+        </tr>
+    </tbody>
+</table>
 
 {% if job.customerComment %}
-<div class="p-4 mt-8 border border-gray-400 text-blue-400 rounded flex items-center">
+<div class="p-4 mt-4 border border-gray-300 text-blue-400 rounded flex items-center">
     <div class="ml-3 mr-5"><i class="fas fa-info text-3xl"></i></div>
     <div>
         <h3 class="text-xl mb-1">Commentaire</h3>

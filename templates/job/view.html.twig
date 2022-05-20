@@ -9,26 +9,7 @@
             {{ job.customerReference }}
         </p>
 
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            {# Customer actions #}
-            <div>
-                {% if is_granted('UPDATE_STATUS_FROM_CREATED_TO_SENT', job) %}
-                    {{ include('component/button/button.html.twig', {
-                        href: path('job_status_update_to_sent', { id: job.id }),
-                        label: 'Envoyer à ATC',
-                        icon: 'fas fa-file-import',
-                        iconClass: 'mr-2 text-xl',
-                    }) }}
-                {% elseif is_granted('UPDATE_STATUS_FROM_APPROVAL', job) %}
-                    {{ include('component/button/button.html.twig', {
-                        href: path('job_check', { id: job.id }),
-                        label: 'Vérifier le Bon à Tirer',
-                        icon: 'fas fa-check',
-                        iconClass: 'mr-2 text-xl',
-                    }) }}
-                {% endif %}
-            </div>
-
+        <div class="flex flex-col md:flex-row justify-end items-center">
             {# Job status #}
             <div>
                 {% if is_granted('UPDATE_STATUS', job) %}
@@ -105,6 +86,9 @@
             </div>
         {% endif %}
 
+        {# Actions #}
+        {{ include('job/_view_actions.html.twig') }}
+
         {# Infos #}
         {{ include('job/_view_info.html.twig') }}
 
@@ -112,15 +96,10 @@
         {{ include('job/_view_job_files.html.twig') }}
 
         {# ValidationFiles #}
-        {% if is_granted('ROLE_COMPANY_USER') %}
-            {{ include('job/_view_validation_files.html.twig') }}
-        {% endif %}
+        {{ include('job/_view_validation_files.html.twig') }}
 
         {# Delivery #}
         {{ include('job/_view_delivery.html.twig') }}
-
-        {# Actions #}
-        {{ include('job/_view_bottom_actions.html.twig') }}
 
         {# History #}
         {{ include('job/_view_history.html.twig') }}

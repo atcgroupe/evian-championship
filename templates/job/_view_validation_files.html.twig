@@ -1,23 +1,35 @@
 {# Title #}
-<div class="flex justify-between items-center mt-12 p-3 border-l-8 border-prunoise bg-gray-100">
+<div class="flex justify-between items-center mt-12 px-3 py-5 rounded-r-xl border-l-8 border-prunoise bg-gray-100">
     <h2 class="text-2xl text-prunoise font-light">
         Fichier(s) BAT.
     </h2>
 
     {# Option button #}
     <div>
+        {% if job.validationFiles.count > 0 %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_validation_file_download', { id: job.id }),
+            label: 'Télécharger tout',
+            labelClass: 'hidden md:block',
+            icon: 'fas fa-download',
+            iconClass: 'py-1',
+            size: 'small',
+            class: 'mr-1'
+        }) }}
+        {% endif %}
+
         {% if is_granted('ADD_VALIDATION_FILE', job) %}
             {% if job.validationFiles.empty %}
-                {% set jobFileLabel = 'Charger les fichiers' %}
+                {% set jobFileLabel = 'Charger les BAT' %}
             {% else %}
-                {% set jobFileLabel = 'Charger un nouveau fichier' %}
+                {% set jobFileLabel = 'Charger un nouveau BAT' %}
             {% endif %}
             {{ include('component/button/button.html.twig', {
                 href: path('job_validation_file_add', { id: job.id }),
                 label: jobFileLabel,
                 labelClass: 'hidden md:block',
-                icon: 'fas fa-plus',
-                iconClass: 'py-1 md:hidden',
+                icon: 'fas fa-upload',
+                iconClass: 'py-1',
                 size: 'small'
             }) }}
         {% elseif is_granted('UPDATE_STATUS_FROM_APPROVAL', job) %}
@@ -37,20 +49,34 @@
 <div class="mt-4">
     {% if job.validationFiles is not empty %}
         {% for file in job.validationFiles %}
-            <div class="p-3 border border-gray-400 rounded-md flex justify-between items-center mt-2">
-                <div class="mr-3">
-                    {{ file.sourceName }}
-                    <span class="text-gray-400 italic text-sm">(Ajouté le {{ file.date|date('d/m à H:i') }})</span>
+            <div class="flex justify-between items-center px-3 mt-2 rounded-md hover:bg-gray-100">
+                <div class="py-1 flex justify-start items-center">
+                    <div><i class="fas fa-angle-right text-2xl mx-2 text-blue-400"></i></div>
+
+                    <div>
+                        <div class="mr-3 text-gray-700">{{ file.sourceName }}</div>
+
+                        <div class="text-gray-400 text-xs italic">
+                            Ajouté le {{ file.date|date('d/m à H:i') }}
+                        </div>
+                    </div>
                 </div>
 
                 <div>
-                    {% if is_granted('REMOVE_VALIDATION_FILE', job) %}
                     <a
-                        href="{{ path('job_validation_file_remove', { id: job.id, fileId: file.id }) }}"
-                        class="hover:text-prunoise"
+                            href="{{ path('job_validation_file_download_one', { id: job.id, fileId: file.id }) }}"
+                            class="mr-3 hover:text-prunoise"
                     >
-                        <i class="fas fa-trash-alt"></i>
+                        <i class="fas fa-download"></i>
                     </a>
+
+                    {% if is_granted('REMOVE_VALIDATION_FILE', job) %}
+                        <a
+                                href="{{ path('job_validation_file_remove', { id: job.id, fileId: file.id }) }}"
+                                class="hover:text-prunoise"
+                        >
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     {% endif %}
                 </div>
             </div>
