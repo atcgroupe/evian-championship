@@ -22,20 +22,4 @@ class JobListController extends AbstractJobController
             ]
         );
     }
-
-    #[Route('/jobs/reporting', name: 'job_reporting')]
-    public function report(JobReportingManager $reportManager): Response
-    {
-        $jobs = $this->jobRepository->findAllWithRelations();
-
-        return $this->render(
-            'job/reporting.html.twig',
-            [
-                'jobs' => $jobs,
-                'jobStatusList' => JobStatus::getFormChoices(),
-                'globalBudget' => $reportManager->getGlobalBudget(),
-                'totalSurface' => $reportManager->getTotalSurface()
-            ]
-        );
-    }
 }
