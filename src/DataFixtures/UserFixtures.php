@@ -26,6 +26,22 @@ class UserFixtures extends Fixture
         $projectManager->setRoles([User::ROLE_PROJECT_MANAGER]);
         $manager->persist($projectManager);
 
+        $graphicDesigner = new User();
+        $graphicDesigner->setFirstName('Laura');
+        $graphicDesigner->setLastName('Poëzévara');
+        $graphicDesigner->setEmail('laura.poezevara@atc-groupe.com');
+        $graphicDesigner->setPassword('$2y$13$NeG7gqamiQ3kjY79GUGczeo4CqVo0e/fnCNKeC5lYZDgnERzGOtzm');
+        $graphicDesigner->setRoles([User::ROLE_GRAPHIC_DESIGNER]);
+        $manager->persist($graphicDesigner);
+
+        $shippingManager = new User();
+        $shippingManager->setFirstName('Nathalie');
+        $shippingManager->setLastName('Florio');
+        $shippingManager->setEmail('nathalie.florio@atc-groupe.com');
+        $shippingManager->setPassword('$2y$13$sseN.BFWBNFfcOrqdom.jOudUieokuPQC2SCHsgv3Xkiy1fYGK0zm');
+        $shippingManager->setRoles([User::ROLE_SHIPPING_MANAGER]);
+        $manager->persist($shippingManager);
+
         $admin = new User();
         $admin->setFirstName('Pierre');
         $admin->setLastName('Gaimard');
