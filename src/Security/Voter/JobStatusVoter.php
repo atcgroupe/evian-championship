@@ -17,6 +17,7 @@ class JobStatusVoter extends Voter
     public const UPDATE_STATUS_FROM_SENT_TO_APPROVAL = 'UPDATE_STATUS_FROM_SENT_TO_APPROVAL';
     public const UPDATE_STATUS_FROM_APPROVAL = 'UPDATE_STATUS_FROM_APPROVAL';
     public const UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION = 'UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION';
+    public const UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED = 'UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED';
     public const UPDATE_STATUS_TO_CANCELED = 'UPDATE_STATUS_TO_CANCELED';
     public const UPDATE_STATUS_TO_CREATED = 'UPDATE_STATUS_TO_CREATED';
 
@@ -33,6 +34,7 @@ class JobStatusVoter extends Voter
                 self::UPDATE_STATUS_FROM_SENT_TO_APPROVAL,
                 self::UPDATE_STATUS_FROM_APPROVAL,
                 self::UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION,
+                self::UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED,
                 self::UPDATE_STATUS_TO_CANCELED,
                 self::UPDATE_STATUS_TO_CREATED,
             ])
@@ -54,6 +56,7 @@ class JobStatusVoter extends Voter
             self::UPDATE_STATUS_FROM_SENT_TO_APPROVAL => $this->canUpdateFromSentToApproval(),
             self::UPDATE_STATUS_FROM_APPROVAL => $this->canUpdateFromApproval(),
             self::UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION => $this->canUpdateFromApprovedToProduction(),
+            self::UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED => $this->canUpdateFromProductionToShipped(),
             self::UPDATE_STATUS_TO_CANCELED => $this->canUpdateStatusToCanceled(),
             self::UPDATE_STATUS_TO_CREATED => $this->canUpdateStatusToCreated(),
             default => false
@@ -101,7 +104,7 @@ class JobStatusVoter extends Voter
      */
     private function canUpdateFromSentToApproval(): bool
     {
-        if (!$this->security->isGranted('ROLE_COMPANY_USER')) {
+        if (!$this->security->isGranted('ROLE_GRAPHIC_DESIGNER')) {
             return false;
         }
 
@@ -141,8 +144,23 @@ class JobStatusVoter extends Voter
     private function canUpdateFromApprovedToProduction(): bool
     {
         if (
-            $this->security->isGranted('ROLE_COMPANY_USER') &&
+            $this->security->isGranted('ROLE_GRAPHIC_DESIGNER') &&
             $this->job->getStatus() == JobStatus::APPROVED->getValue()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    private function canUpdateFromProductionToShipped(): bool
+    {
+        if (
+            $this->security->isGranted('ROLE_SHIPPING_MANAGER') &&
+            $this->job->getStatus() == JobStatus::PRODUCTION->getValue()
         ) {
             return true;
         }
