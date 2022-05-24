@@ -22,7 +22,7 @@ enum JobStatus: int implements AppEnumInterface
         {
             JobStatus::CREATED => 'Brouillon',
             JobStatus::SENT => 'A traiter par ATC',
-            JobStatus::APPROVAL => 'En attente de validation client',
+            JobStatus::APPROVAL => 'En attente de validation',
             JobStatus::APPROVED => 'Bat validé',
             JobStatus::REJECTED => 'Bat rejeté',
             JobStatus::PRODUCTION => 'En production',

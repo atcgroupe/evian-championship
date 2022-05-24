@@ -14,7 +14,7 @@
             <span class="px-2 border border-prunoise rounded-md text-prunoise">Reporting</span>
         </h1>
 
-        <div class="mt-12 p-3 border-l-8 border-prunoise bg-gray-100 rounded-tl-xl rounded-br-xl flex flex-col md:flex-row justify-between md:items-center">
+        <div class="mt-12 px-3 py-5 border-l-8 border-prunoise bg-gray-100 rounded-r-xl flex flex-col md:flex-row justify-between md:items-center">
             <h2 class="text-2xl text-prunoise font-light">
                 Budget global
             </h2>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="mt-12 p-3 border-l-8 border-prunoise bg-gray-100 rounded-tl-xl rounded-br-xl flex justify-between items-center">
+        <div class="mt-12 px-3 py-5 border-l-8 border-prunoise bg-gray-100 rounded-r-xl flex flex-col md:flex-row justify-between md:items-center">
             <h2 class="text-2xl text-prunoise font-light">
                 Detail par job
             </h2>
@@ -33,7 +33,8 @@
                     class="
                     flex justify-start items-center
                     py-2 px-5
-                    w-1/2
+                    mt-3 md:mt-0
+                    w-full md:w-1/2
                     bg-white
                     border border-gray-400 focus:border-prunoise
                     rounded-full
@@ -58,15 +59,25 @@
                     >
                 </div>
             </div>
+
+            <div class="mr-3 mt-3 md:mt-0">
+                {{ include('component/button/button.html.twig', {
+                    href: path('job_reporting_download'),
+                    label: 'Exporter',
+                    icon: 'fas fa-file-excel',
+                    iconClass: 'py-1 mr-1',
+                    size: 'small',
+                }) }}
+            </div>
         </div>
 
-            {% set theadCellClass = 'px-3 py-3 font-medium border border-gray-300 text-gray-700 text-left' %}
+        {% set theadCellClass = 'px-3 py-3 font-medium border border-gray-300 text-gray-700 text-left' %}
 
         {% if jobs is not empty %}
         <table
             class="
                 w-full
-                mt-8
+                mt-3
                 border-collapse border border-gray-300
                 text-sm
             "

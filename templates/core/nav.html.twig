@@ -33,7 +33,7 @@
 
                     {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_ADMIN') %}
                     {{ include('component/nav/navbar_menu_item.html.twig', {
-                        href: path('job_reporting'),
+                        href: path('job_reporting_index'),
                         label: 'Reporting'
                     }) }}
 
@@ -102,7 +102,7 @@
 
                 {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_ADMIN') %}
                 {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
-                    href: path('job_reporting'),
+                    href: path('job_reporting_index'),
                     label: 'Reporting'
                 }) }}
 

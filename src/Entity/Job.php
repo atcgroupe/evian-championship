@@ -443,6 +443,14 @@ class Job
     }
 
     /**
+     * @return int
+     */
+    public function getTotalQuantity(): int
+    {
+        return $this->getImageQuantity() * $this->getImageCount();
+    }
+
+    /**
      * @return float
      */
     public function getUnitPrice(): float
@@ -488,5 +496,42 @@ class Job
     public function getJobStatus(): JobStatus
     {
         return JobStatus::from($this->getStatus());
+    }
+
+    /**
+     * Surface in m2
+     *
+     * @return float
+     */
+    public function getUnitVisibleSurface(): float
+    {
+        return ($this->getWidth() * $this->getHeight()) / 1000;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUnitBleedSurface(): float
+    {
+        return (
+            ($this->getWidth() + $this->getLeftBleed() + $this->getRightBleed())
+            * ($this->getHeight() + $this->getTopBleed() + $this->getBottomBleed())
+        ) / 1000;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalVisibleSurface(): float
+    {
+        return $this->getUnitVisibleSurface() * $this->getTotalQuantity();
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalBleedSurface(): float
+    {
+        return $this->getUnitBleedSurface() * $this->getTotalQuantity();
     }
 }
