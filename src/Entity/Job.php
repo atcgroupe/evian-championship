@@ -455,7 +455,7 @@ class Job
      */
     public function getUnitPrice(): float
     {
-        return (($this->getWidth()/1000) * ($this->getHeight()/1000)) * $this->getProduct()->getPrice();
+        return $this->getUnitBleedSurface() * $this->getProduct()->getPrice();
     }
 
     /**
@@ -505,7 +505,7 @@ class Job
      */
     public function getUnitVisibleSurface(): float
     {
-        return ($this->getWidth() * $this->getHeight()) / 1000;
+        return ($this->getWidth() / 1000) * ($this->getHeight() / 1000);
     }
 
     /**
@@ -513,10 +513,10 @@ class Job
      */
     public function getUnitBleedSurface(): float
     {
-        return (
-            ($this->getWidth() + $this->getLeftBleed() + $this->getRightBleed())
-            * ($this->getHeight() + $this->getTopBleed() + $this->getBottomBleed())
-        ) / 1000;
+        $width = ($this->getWidth() + $this->getLeftBleed() + $this->getRightBleed()) / 1000;
+        $height = ($this->getHeight() + $this->getTopBleed() + $this->getBottomBleed()) / 1000;
+
+        return $width * $height;
     }
 
     /**

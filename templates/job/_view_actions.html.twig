@@ -110,11 +110,23 @@
         }) }}
     {% endif %}
 
-    {# COMPANY_USER: Send the job to production #}
+    {# GRAPHIC_DESIGNER: Send the job to production #}
     {% if is_granted('UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION', job) %}
         {{ include('component/button/button.html.twig', {
             href: path('job_status_update_to_production', { id: job.id }),
             label: 'Envoyer en production',
+            icon: 'fas fa-file-import',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {# SHIPPING_MANAGER: Send the job to production #}
+    {% if is_granted('UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_production', { id: job.id }),
+            label: 'Marquer comme expédié',
             icon: 'fas fa-file-import',
             iconClass: 'mr-2 text-xl',
             class: 'mt-3',

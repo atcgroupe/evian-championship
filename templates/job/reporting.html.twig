@@ -24,6 +24,7 @@
             </div>
         </div>
 
+        {% if jobs is not empty %}
         <div class="mt-12 px-3 py-5 border-l-8 border-prunoise bg-gray-100 rounded-r-xl flex flex-col md:flex-row justify-between md:items-center">
             <h2 class="text-2xl text-prunoise font-light">
                 Detail par job
@@ -73,7 +74,6 @@
 
         {% set theadCellClass = 'px-3 py-3 font-medium border border-gray-300 text-gray-700 text-left' %}
 
-        {% if jobs is not empty %}
         <table
             class="
                 w-full
@@ -133,15 +133,6 @@
                 "
             >
                 <p class="text-prunoise">Il n'y a encore aucun job dans la liste</p>
-                <p class="mt-6">
-                    {{ include('component/button/button.html.twig', {
-                        href: path('job_create'),
-                        icon: 'fas fa-file-import',
-                        iconClass: 'text-2xl ml-2',
-                        label: 'Ajouter un nouveau job',
-                        labelClass: 'my-3 mr-3 text-xl'
-                    }) }}
-                </p>
             </div>
         {% endif %}
     </div>

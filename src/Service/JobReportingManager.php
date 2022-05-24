@@ -56,7 +56,14 @@ class JobReportingManager
      */
     private function setData(): void
     {
-        $this->jobs = $this->jobRepository->findAllWithRelations();
+        $jobs = $this->jobRepository->findSentWidthRelations();
+
+        if (null === $jobs) {
+            return;
+        }
+
+        $this->jobs = $jobs;
+
         foreach ($this->jobs as $job)
         {
             $this->globalBudget += $job->getTotalPrice();
@@ -111,7 +118,7 @@ class JobReportingManager
                 $job->getRightBleed(),
                 $job->getTopBleed(),
                 $job->getBottomBleed(),
-                $job->getUnitBleedSurface(),
+                round($job->getTotalBleedSurface(), 2),
                 $job->getImageCount(),
                 $job->getImageQuantity(),
                 $job->getTotalQuantity(),
