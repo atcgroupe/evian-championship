@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Job;
+use App\Enum\JobStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
@@ -87,5 +88,27 @@ class JobRepository extends ServiceEntityRepository
                 ->addSelect('logs')
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @return Job[]|null
+     */
+    public function findSentWidthRelations(): array | null
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.status != :status')
+                ->setParameter('status', JobStatus::CREATED->getValue())
+            ->leftJoin('j.delivery', 'delivery')
+                ->addSelect('delivery')
+            ->leftJoin('j.product', 'product')
+                ->addSelect('product')
+            ->leftJoin('j.jobFiles', 'files')
+                ->addSelect('files')
+            ->leftJoin('j.validationFiles', 'validationFiles')
+                ->addSelect('validationFiles')
+            ->leftJoin('j.jobLogs', 'logs')
+                ->addSelect('logs')
+            ->getQuery()
+            ->getResult();
     }
 }

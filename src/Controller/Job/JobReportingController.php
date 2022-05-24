@@ -15,7 +15,7 @@ class JobReportingController extends AbstractJobController
     #[Route('', name: '_index')]
     public function index(JobReportingManager $reportManager): Response
     {
-        $jobs = $this->jobRepository->findAllWithRelations();
+        $jobs = $this->jobRepository->findSentWidthRelations();
 
         return $this->render(
             'job/reporting.html.twig',
