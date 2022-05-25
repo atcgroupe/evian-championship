@@ -1,0 +1,86 @@
+{% extends 'core/core.html.twig' %}
+
+{% block main %}
+    <div class="max-w-screen-md mx-auto">
+        {# nav #}
+        <p class="text-sm text-gray-400 flex items-center mb-6">
+            <i class="fas fa-bars mr-2"></i>
+            Admin
+        </p>
+
+        {# Title #}
+        <h1 class="text-3xl font-light text-center my-6">
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">Admin</span>
+        </h1>
+
+        {# Users title#}
+        <div class="flex justify-between items-center mt-12 px-3 py-5 rounded-r-xl border-l-8 border-prunoise bg-gray-100">
+            <h2 class="text-2xl text-prunoise font-light">
+                Utilisateurs
+            </h2>
+
+            <div>
+                {{ include('component/button/button.html.twig', {
+                    href: path('admin_user_create'),
+                    label: 'Nouveau',
+                    labelClass: 'hidden md:block',
+                    icon: 'fas fa-plus',
+                    iconClass: 'py-1',
+                    size: 'small'
+                }) }}
+            </div>
+        </div>
+
+        {# Users Data #}
+        <div class="mt-4">
+            {% for user in users %}
+                <div class="flex justify-between items-center px-3 mt-2 rounded-md hover:bg-gray-100">
+                    <div class="py-1 flex justify-start items-center">
+                        <div><i class="fas fa-angle-right text-2xl mx-2 text-blue-400"></i></div>
+
+                        <div>
+                            <div class="mr-3 text-gray-700">
+                                {{ user.displayName('complete') }}
+                            </div>
+
+                            <div class="text-gray-400 -mt-1">
+                                {{ user.email }}
+                            </div>
+
+                            <div class="text-gray-400 text-xs italic">
+                                {{ user.displayRole }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-gray-500">
+                        {% if user.isActive %}
+                            {% set status = 'ACTIF' %}
+                            {% set color = 'green' %}
+                        {% else %}
+                            {% set status = 'DÉSACTIVÉ' %}
+                            {% set color = 'red' %}
+                        {% endif %}
+                        <span class="border border-{{ color }}-400 rounded-full px-1 text-{{ color }}-400 text-xs mr-2">
+                            {{ status }}
+                        </span>
+
+                        <a
+                            href="{{ path('admin_user_update', { id: user.id }) }}"
+                            class="mr-3 hover:text-prunoise"
+                        >
+                            <i class="fas fa-pen"></i>
+                        </a>
+
+                        <a
+                                href="{{ path('admin_user_delete', { id: user.id }) }}"
+                            class="mr-3 hover:text-prunoise"
+                        >
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

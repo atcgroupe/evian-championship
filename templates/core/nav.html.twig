@@ -54,6 +54,13 @@
                             label: 'Livraisons'
                         }) }}
                     {% endif %}
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        {{ include('component/nav/navbar_menu_item.html.twig', {
+                            href: path('admin_index'),
+                            label: 'Admin'
+                        }) }}
+                    {% endif %}
                 </div>
             </div>
 
