@@ -2,48 +2,79 @@
 
 namespace App\Entity;
 
+use App\Enum\UserRole;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity('email', message: 'Un compte avec cette adresse mail est déjà enregistré.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
-    public const ROLE_CUSTOMER = 'ROLE_CUSTOMER';
-    public const ROLE_PROJECT_MANAGER = 'ROLE_PROJECT_MANAGER';
-    public const ROLE_GRAPHIC_DESIGNER = 'ROLE_GRAPHIC_DESIGNER';
-    public const ROLE_SHIPPING_MANAGER = 'ROLE_SHIPPING_MANAGER';
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'Le mail est obligatoire')]
+    #[Assert\Email(message: 'Email invalide')]
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Assert\NotBlank(message: 'Le rôle est obligatoire')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
     private $password;
 
     #[ORM\Column(type: 'string', length: 100)]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 100,
+        minMessage: 'Le prénom doit faire au minimum 3 caractères',
+        maxMessage: 'Le prénom doit faire au maximum 100 caractères'
+    )]
     private $firstName;
 
     #[ORM\Column(type: 'string', length: 100)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 100,
+        minMessage: 'Le nom doit faire au minimum 3 caractères',
+        maxMessage: 'Le nom doit faire au maximum 100 caractères'
+    )]
     private $lastName;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserEventNotification::class, orphanRemoval: true)]
     private $eventNotifications;
 
+    #[ORM\Column(type: 'boolean')]
+    private $isActive;
+
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire', groups: ['user_create'])]
+    #[Assert\Length(
+        min: 8,
+        minMessage: 'Le mot de passe doit comporter au minimum 8 caractères',
+    )]
+    private string|null $plainPassword = null;
+
     public function __construct()
     {
         $this->eventNotifications = new ArrayCollection();
+        $this->setDefaults();
+    }
+
+    private function setDefaults()
+    {
+        $this->setIsActive(true);
     }
 
     public function getId(): ?int
@@ -110,6 +141,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return string|null
+     */
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string|null $plainPassword
+     */
+    public function setPlainPassword(?string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
      * Returning a salt is only needed, if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
@@ -125,8 +172,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -195,5 +241,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getEventNotificationStatus(int $value)
     {
 
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayRole(): string
+    {
+        return UserRole::from($this->getRoles()[0])->getLabel();
     }
 }

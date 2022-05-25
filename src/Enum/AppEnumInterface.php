@@ -4,7 +4,7 @@ namespace App\Enum;
 
 interface AppEnumInterface
 {
-    public function getValue(): int;
+    public function getValue(): int|string;
 
     public function getLabel(): string;
 

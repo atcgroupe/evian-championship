@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Job;
 use App\Entity\JobLog;
+use App\Entity\User;
 use App\Enum\JobStatus;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -27,7 +28,9 @@ class JobLogManager
      */
     public function addLog(Job $job, string $action): void
     {
-        $log = new JobLog($job, $this->security->getUser(), $action);
+        /** @var User $user */
+        $user = $this->security->getUser();
+        $log = new JobLog($job, $user->getDisplayName('log'), $action);
         $job->addJobLog($log);
         $this->manager->persist($log);
         $this->manager->flush();

@@ -4,7 +4,7 @@ namespace App\Enum;
 
 trait AppEnumTrait
 {
-    public function getValue(): int
+    public function getValue(): string|int
     {
         return $this->value;
     }

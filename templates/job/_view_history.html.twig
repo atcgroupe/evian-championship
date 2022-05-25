@@ -20,7 +20,7 @@
 
             <div>
                 <div class="text-gray-400 text-xs italic">
-                    Par {{ log.user.displayname('log') }} le {{ log.datetime|date('d/m à H:i') }}
+                    Par {{ log.user }} le {{ log.datetime|date('d/m à H:i') }}
                 </div>
 
                 <div class="mr-3 text-sm text-gray-500">{{ log.action }}</div>
