@@ -3,7 +3,6 @@
 namespace App\Controller\Job;
 
 use App\Enum\JobStatus;
-use App\Service\JobReportingManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
