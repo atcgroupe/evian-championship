@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\JobLogRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: JobLogRepository::class)]
 class JobLog
@@ -24,11 +23,10 @@ class JobLog
     #[ORM\JoinColumn(nullable: false)]
     private $job;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\Column(type: 'string', length: 100)]
     private $user;
 
-    public function __construct(Job $job, User $user, string $action)
+    public function __construct(Job $job, string $user, string $action)
     {
         $this->setJob($job);
         $this->setUser($user);
@@ -82,12 +80,12 @@ class JobLog
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?string
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(string $user): self
     {
         $this->user = $user;
 
