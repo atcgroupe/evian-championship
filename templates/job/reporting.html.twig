@@ -85,11 +85,11 @@
             <thead>
                 <tr class="font-light bg-gray-100">
                     <th class="{{ theadCellClass }} sort text-center" data-sort="ref">REF</th>
-                    <th class="{{ theadCellClass }} sort" data-sort="location">EMPLACEMENT</th>
-                    <th class="{{ theadCellClass }} sort max-w-xs" data-sort="info">DESCRIPTIF</th>
-                    <th class="{{ theadCellClass }} sort" data-sort="product">PRODUIT</th>
-                    <th class="{{ theadCellClass }} text-center w-10">FORMAT</th>
-                    <th class="{{ theadCellClass }} text-center">QUANTITÉ</th>
+                    <th class="{{ theadCellClass }} sort hidden lg:table-cell" data-sort="location">EMPLACEMENT</th>
+                    <th class="{{ theadCellClass }} sort hidden lg:table-cell max-w-xs" data-sort="info">DESCRIPTIF</th>
+                    <th class="{{ theadCellClass }} sort hidden md:table-cell" data-sort="product">PRODUIT</th>
+                    <th class="{{ theadCellClass }} text-center hidden lg:table-cell w-10">FORMAT</th>
+                    <th class="{{ theadCellClass }} text-center hidden md:table-cell">QUANTITÉ</th>
                     <th class="{{ theadCellClass }} text-center">P.U.</th>
                     <th class="{{ theadCellClass }} text-center">P.T.</th>
                 </tr>
@@ -112,11 +112,11 @@
                     data-route="{{ path('job_view', { id: job.id }) }}"
                 >
                     <td class="{{ tbodyCellClass }} ref text-center">{{ job.customerReference }}</td>
-                    <td class="{{ tbodyCellClass }} location ">{{ job.location }}</td>
-                    <td class="{{ tbodyCellClass }} info max-w-xs truncate">{{ job.description }}</td>
-                    <td class="{{ tbodyCellClass }} product">{{ job.product.name }}</td>
-                    <td class="{{ tbodyCellClass }} text-center w-10">{{ job.width }}x{{ job.height }}</td>
-                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayQuantity }}</td>
+                    <td class="{{ tbodyCellClass }} location hidden lg:table-cell">{{ job.location }}</td>
+                    <td class="{{ tbodyCellClass }} info hidden lg:table-cell max-w-xs truncate">{{ job.description }}</td>
+                    <td class="{{ tbodyCellClass }} product hidden md:table-cell">{{ job.product.name }}</td>
+                    <td class="{{ tbodyCellClass }} text-center hidden lg:table-cell w-10">{{ job.width }}x{{ job.height }}</td>
+                    <td class="{{ tbodyCellClass }} text-center hidden md:table-cell">{{ job.displayQuantity }}</td>
                     <td class="{{ tbodyCellClass }} text-center">{{ job.displayUnitPrice }}</td>
                     <td class="{{ tbodyCellClass }} text-center">{{ job.displayTotalPrice }}</td>
                 </tr>
