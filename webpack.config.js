@@ -68,10 +68,10 @@ Encore
     .enableSassLoader()
 
     // uncomment if you use TypeScript
-    .enableTypeScriptLoader()
+    //.enableTypeScriptLoader()
 
-    .enableVueLoader()
-    .addPlugin(new webpack.DefinePlugin({ __VUE_OPTIONS_API__: true, __VUE_PROD_DEVTOOLS__: true }),)
+    //.enableVueLoader()
+    //.addPlugin(new webpack.DefinePlugin({ __VUE_OPTIONS_API__: true, __VUE_PROD_DEVTOOLS__: true }),)
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
