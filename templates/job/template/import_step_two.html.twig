@@ -1,0 +1,141 @@
+{% extends 'core/core.html.twig' %}
+
+{% block main %}
+    <div class="max-w-screen-sm mx-auto">
+        {# Title #}
+        <h1 class="text-3xl font-light text-center my-6">
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">Importer des Jobs</span>
+        </h1>
+
+        {# Steps #}
+        <div class="mt-10 mx-3">
+            <h2 class="text-xl text-prunoise text-center font-light">Etape 2: Vérification</h2>
+
+            <div class="border-b border-prunoise mt-12"></div>
+
+            <div class="flex justify-between items-center -mt-7">
+                {# step 1 #}
+                <div
+                    class="
+                        rounded-full
+                        border border-prunoise
+                        bg-white
+                        shadow-md
+                        text-prunoise
+                        w-14 h-14
+                        flex justify-center items-center
+                        text-2xl
+                    "
+                >
+                    <div>1</div>
+                </div>
+
+                {# step 2 #}
+
+                <div
+                    class="
+                        rounded-full
+                        border border-prunoise
+                        bg-prunoise
+                        text-white
+                        shadow-md
+                        w-14 h-14
+                        flex justify-center items-center
+                        text-2xl
+                    "
+                >
+                    <div>2</div>
+                </div>
+
+                {# step 3 #}
+                <div
+                        class="
+                    rounded-full
+                    border border-prunoise
+                    text-prunoise
+                    bg-white
+                    shadow-md
+                    w-14 h-14
+                    flex justify-center items-center
+                    text-2xl
+                "
+                >
+                    <div>3</div>
+                </div>
+            </div>
+        </div>
+
+        {% if report is not null %}
+            <div class="p-3 mt-10 border rounded-md border-gray-400 text-center text-gray-500">
+                Nombre de jobs trouvés: {{ report.jobCount }}
+            </div>
+
+            <div class="p-3 mt-3 bg-green-400 text-center text-white rounded-md">
+                Nombre de jobs valides: {{ report.validJobsCount }}
+            </div>
+
+            {% if report.hasInvalidJobs %}
+                <div class="p-3 mt-3 bg-red-400 text-center text-white rounded-md">
+                    Nombre de jobs invalides: {{ report.invalidJobsCount }}
+                </div>
+            {% endif %}
+
+            {% if report.hasRefDuplication %}
+                <div class="p-3 mt-3 bg-red-400 text-center text-white rounded-md">
+                    Duplication de références: {{ report.refDuplications|length }}
+                </div>
+            {% endif %}
+
+            {% if report.notValid %}
+                <div class="mt-3 p-3 bg-red-100 rounded-md">
+                    <h2 class="text-red-500 text-center font-light text-2xl">Erreurs détectées</h2>
+
+                    {% if report.hasInvalidJobs %}
+                        {% for rowReport in report.invalidRowsReport %}
+                            <h4 class="font-bold mt-3 text-gray-500">Ligne n°{{ rowReport.rowIndex }}</h4>
+                            <ul>
+                                {% for error in rowReport.constraintViolations %}
+                                    <li class="text-sm text-gray-500">- {{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if report.hasRefDuplication %}
+                        <h4 class="font-bold mt-3 text-gray-500">Duplications de références détectées:</h4>
+                        <ul>
+                            {% for refDuplication in report.refDuplications %}
+                                <li class="text-sm text-gray-500">
+                                    - {{ refDuplication.name }} : trouvé {{ refDuplication.count }} fois
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-xl font-light text-center text-gray-500 bg-blue-100 rounded-md p-3 my-12 border border-blue-300">
+                Le fichier importé ne contient aucun job.
+            </div>
+        {% endif %}
+
+        <div class="grid gap-4 grid-cols-2 mt-8">
+            {{ include('component/button/button.html.twig', {
+                'href': path('job_index'),
+                'label': 'Annuler',
+            }) }}
+
+            {% if report is not null and report.valid %}
+                {{ include('component/button/button.html.twig', {
+                    'href': path('job_import_import_jobs'),
+                    'label': 'Importer les jobs',
+                }) }}
+            {% else %}
+                {{ include('component/button/button.html.twig', {
+                    'href': path('job_import_template_upload'),
+                    'label': 'Charger un nouveau fichier',
+                }) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
