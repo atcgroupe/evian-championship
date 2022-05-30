@@ -6,6 +6,7 @@
 parameters:
     app.job_file_dir: '%kernel.project_dir%/public/data/job'
     app.validation_file_dir: '%kernel.project_dir%/public/data/validation'
+    app.template_file_dir: '%kernel.project_dir%/public/data/template'
 
 services:
     # default configuration for services in *this* file
@@ -29,3 +30,7 @@ services:
         arguments:
             $jobFileDir: '%app.job_file_dir%'
             $validationFileDir: '%app.validation_file_dir%'
+
+    App\Service\AppSpreadsheet\AppSpreadsheetReader:
+        arguments:
+            $templateFileDir: '%app.template_file_dir%'
