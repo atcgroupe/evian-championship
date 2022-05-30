@@ -1,0 +1,64 @@
+{# Title #}
+<div class="flex justify-between items-center mt-12 px-3 py-5 rounded-r-xl border-l-8 border-prunoise bg-gray-100">
+    <h2 class="text-2xl text-prunoise font-light">
+        Livraison
+    </h2>
+
+    <div>
+        {% if is_granted('UPDATE_DELIVERY', job) %}
+            {% if job.delivery is not null %}
+                {% set deliveryLabel = 'Modifier la livraison' %}
+            {% else %}
+                {% set deliveryLabel = 'Attribuer une livraison' %}
+            {% endif %}
+            {% if deliveries is not empty %}
+                {{ include('component/button/button.html.twig', {
+                    href: path('job_delivery_update', { id: job.id }),
+                    label: deliveryLabel,
+                    labelClass: 'hidden md:block',
+                    icon: 'fas fa-truck',
+                    iconClass: 'py-1',
+                    size: 'small'
+                }) }}
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{# Data #}
+<div class="mt-4">
+    {% if job.delivery is not null %}
+        <div class="flex justify-between items-center px-3 mt-2 rounded-md hover:bg-gray-100">
+            <div class="py-1 flex justify-start items-center">
+                <div><i class="fas fa-angle-right text-2xl mx-2 text-blue-400"></i></div>
+
+                <div>
+                    <div class="mr-3 text-gray-700">{{ job.delivery.title }}</div>
+
+                    {% if job.delivery.comment is not empty %}
+                        <div class="text-gray-400 text-xs italic">
+                            {{ job.delivery.comment }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div>
+                <div class="text-2xl text-gray-400">{{ job.delivery.date|date('d/m') }}</div>
+            </div>
+        </div>
+    {% elseif deliveries is not empty %}
+        <div class="text-center text-gray-400">La livraison n'est pas encore programée</div>
+    {% else %}
+        {% if is_granted('ROLE_COMPANY_USER') %}
+            <div class="text-center text-gray-400">
+                Aucune livraison n'est disponible.
+                {% if is_granted('ROLE_PROJECT_MANAGER') %}
+                    <a href="{{ path('delivery_create') }}" class="text-prunoise underline-offset-1d">Créer une livraison</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="text-center text-gray-400">La livraison n'est pas encore programée</div>
+        {% endif %}
+    {% endif %}
+</div>

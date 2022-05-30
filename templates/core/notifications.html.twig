@@ -1,0 +1,48 @@
+<div data-controller="flashes" class="my-6">
+    {% for theme, messages in app.flashes %}
+        {% if theme == 'success' %}
+            {% set color = 'green-500' %}
+            {% set icon = 'fas fa-check' %}
+        {% elseif theme == 'info' %}
+            {% set color = 'gray-500' %}
+            {% set icon = 'fas fa-info-circle' %}
+        {% elseif theme == 'warning' %}
+            {% set color = 'orange-500' %}
+            {% set icon = 'fas fa-exclamation' %}
+        {% elseif theme == 'danger' %}
+            {% set color = 'red-500' %}
+            {% set icon = 'fas fa-skull-crossbones' %}
+        {% endif %}
+
+        {% for message in messages %}
+            <div
+                class="
+                    p-4
+                    mt-3
+                    border border-{{ color }}
+                    hover:shadow-lg
+                    flex justify-between items-center
+                    max-w-screen-md mx-auto
+                    rounded-lg
+                "
+                {{ stimulus_target('flashes', 'message') }}
+            >
+                <div class="flex justify-start items-center">
+                    <div>
+                        <i class="text-2xl text-{{ color }} {{ icon }} mr-3"></i>
+                    </div>
+
+                    <div class="text-{{ color }}">{{ message|raw }}</div>
+                </div>
+
+                <div>
+                    <i
+                        class="text-2xl text-{{ color }} far fa-times-circle"
+                        data-action="click->flashes#hide"
+                    >
+                    </i>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>

@@ -1,0 +1,139 @@
+{% extends 'core/core.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('joblist') }}
+{% endblock %}
+
+{% block main %}
+    <div id="joblist" class="max-w-screen-xl mx-auto">
+
+        {# Title #}
+        <h1 class="text-3xl font-light text-center mt-6">
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">Reporting</span>
+        </h1>
+
+        <div class="mt-12 px-3 py-5 border-l-8 border-prunoise bg-gray-100 rounded-r-xl flex flex-col md:flex-row justify-between md:items-center">
+            <h2 class="text-2xl text-prunoise font-light">
+                Budget global
+            </h2>
+
+            <div class="text-2xl text-prunoise">
+                {{ globalBudget }}€
+            </div>
+        </div>
+
+        {% if jobs is not empty %}
+        <div class="mt-12 px-3 py-5 border-l-8 border-prunoise bg-gray-100 rounded-r-xl flex flex-col md:flex-row justify-between md:items-center">
+            <h2 class="text-2xl text-prunoise font-light">
+                Detail par job
+            </h2>
+
+            <div
+                    class="
+                    flex justify-start items-center
+                    py-2 px-5
+                    mt-3 md:mt-0
+                    w-full md:w-1/2
+                    bg-white
+                    border border-gray-400 focus:border-prunoise
+                    rounded-full
+                    shadow-sm
+                "
+            >
+                <div>
+                    <i class="fas fa-search text-xl md:text-2xl text-gray-300 md:ml-2 mr-2 md:mr-4"></i>
+                </div>
+
+                <div class="w-full">
+                    <input
+                            type="search"
+                            placeholder="Recherchez un job par nom, statut, emplacement, ..."
+                            class="
+                            search
+                            w-full
+                            font-light
+                            text-prunoise
+                            outline outline-transparent
+                        "
+                    >
+                </div>
+            </div>
+
+            <div class="mr-3 mt-3 md:mt-0">
+                {{ include('component/button/button.html.twig', {
+                    href: path('job_reporting_download'),
+                    label: 'Exporter',
+                    icon: 'fas fa-file-excel',
+                    iconClass: 'py-1 mr-1',
+                    size: 'small',
+                }) }}
+            </div>
+        </div>
+
+        {% set theadCellClass = 'px-3 py-3 font-medium border border-gray-300 text-gray-700 text-left' %}
+
+        <table
+            class="
+                w-full
+                mt-3
+                border-collapse border border-gray-300
+                text-sm
+            "
+        >
+            <thead>
+                <tr class="font-light bg-gray-100">
+                    <th class="{{ theadCellClass }} sort text-center" data-sort="ref">REF</th>
+                    <th class="{{ theadCellClass }} sort" data-sort="location">EMPLACEMENT</th>
+                    <th class="{{ theadCellClass }} sort max-w-xs" data-sort="info">DESCRIPTIF</th>
+                    <th class="{{ theadCellClass }} sort" data-sort="product">PRODUIT</th>
+                    <th class="{{ theadCellClass }} text-center w-10">FORMAT</th>
+                    <th class="{{ theadCellClass }} text-center">QUANTITÉ</th>
+                    <th class="{{ theadCellClass }} text-center">P.U.</th>
+                    <th class="{{ theadCellClass }} text-center">P.T.</th>
+                </tr>
+            </thead>
+
+            <tbody class="list">
+                {% for job in jobs %}
+                    {% if job.status == 9 %}
+                        {% set tbodyCellClass = 'px-2 py-1 font-light italic border border-gray-300 text-red-400' %}
+                        {% set hoverBgColor = 'red' %}
+                    {% elseif job.status == 5 or job.status == 8 %}
+                        {% set tbodyCellClass = 'px-2 py-1 font-light italic border border-gray-300 text-orange-400' %}
+                        {% set hoverBgColor = 'orange' %}
+                    {% else %}
+                        {% set tbodyCellClass = 'px-2 py-1 font-light border border-gray-300 text-gray-500' %}
+                        {% set hoverBgColor = 'gray' %}
+                    {% endif %}
+                <tr
+                    class="job_item hover:bg-{{ hoverBgColor }}-100 cursor-pointer"
+                    data-route="{{ path('job_view', { id: job.id }) }}"
+                >
+                    <td class="{{ tbodyCellClass }} ref text-center">{{ job.customerReference }}</td>
+                    <td class="{{ tbodyCellClass }} location ">{{ job.location }}</td>
+                    <td class="{{ tbodyCellClass }} info max-w-xs truncate">{{ job.description }}</td>
+                    <td class="{{ tbodyCellClass }} product">{{ job.product.name }}</td>
+                    <td class="{{ tbodyCellClass }} text-center w-10">{{ job.width }}x{{ job.height }}</td>
+                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayQuantity }}</td>
+                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayUnitPrice }}</td>
+                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayTotalPrice }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <div
+                class="
+                    max-w-screen-md mx-auto
+                    mt-24 p-6
+                    text-xl text-center
+                    border border-prunoise rounded-lg
+                "
+            >
+                <p class="text-prunoise">Il n'y a encore aucun job dans la liste</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

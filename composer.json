@@ -1,16 +1,29 @@
 {
+    "name": "atcgroupe/castorama",
+    "version": "1.0.1",
     "type": "project",
     "license": "proprietary",
+    "authors": [
+        {
+            "name": "Pierre Gaimard",
+            "email": "pierre@atc-groupe.com",
+            "homepage": "https://castorama.atc-web2print.com",
+            "role": "Developer"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-zip": "*",
         "doctrine/annotations": "^1.13",
         "doctrine/doctrine-bundle": "^2.6",
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
+        "phpoffice/phpspreadsheet": "^1.23",
         "symfony/console": "5.4.*",
         "symfony/dotenv": "5.4.*",
         "symfony/filesystem": "5.4.*",
@@ -22,6 +35,7 @@
         "symfony/proxy-manager-bridge": "5.4.*",
         "symfony/runtime": "5.4.*",
         "symfony/security-bundle": "5.4.*",
+        "symfony/string": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
         "symfony/validator": "5.4.*",
         "symfony/webpack-encore-bundle": "^1.14",
@@ -78,6 +92,8 @@
         }
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.41"
+        "symfony/maker-bundle": "^1.41",
+        "symfony/stopwatch": "5.4.*",
+        "symfony/web-profiler-bundle": "5.4.*"
     }
 }

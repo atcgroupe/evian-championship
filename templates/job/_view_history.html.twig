@@ -1,0 +1,30 @@
+{# Title #}
+<h2
+    class="
+        flex justify-between items-center
+        mt-12 px-3 py-5 rounded-r-xl
+        border-l-8 border-prunoise
+        text-2xl text-prunoise
+        bg-gray-100
+        font-light
+    "
+>
+    Historique
+</h2>
+
+{# Data #}
+<div class="mt-4">
+    {% for log in job.jobLogs %}
+        <div class="mx-3 py-1 mb-1 hover:bg-gray-100 flex justify-start items-center rounded-md">
+            <div><i class="fas fa-angle-right text-2xl mx-2 text-blue-400"></i></div>
+
+            <div>
+                <div class="text-gray-400 text-xs italic">
+                    Par {{ log.user }} le {{ log.datetime|date('d/m à H:i') }}
+                </div>
+
+                <div class="mr-3 text-sm text-gray-500">{{ log.action }}</div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

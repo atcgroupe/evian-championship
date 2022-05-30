@@ -1,0 +1,107 @@
+{% extends 'core/core.html.twig' %}
+
+{% block main %}
+    <div class="max-w-screen-md mx-auto">
+        {# nav #}
+        <p class="text-sm text-gray-400 flex items-center mb-6">
+            <i class="fas fa-bars mr-2"></i>
+            <a href="{{ path('job_index') }}" class="hover:text-gray-800 mr-1">Suivi des jobs</a> /
+            {{ job.customerReference }}
+        </p>
+
+        <div class="flex flex-col md:flex-row justify-end items-center">
+            {# Job status #}
+            <div>
+                {% if is_granted('UPDATE_STATUS', job) %}
+                    <a href="{{ path('job_status_update', { id: job.id }) }}" class="text-sm text-prunoise px-2 py-0.5 border border-prunoise rounded-full">
+                        {{ job.displayStatus }}
+                    </a>
+                {% else %}
+                    <span class="text-sm text-prunoise px-2 py-0.5 border border-prunoise rounded-full">
+                        {{ job.displayStatus }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Title #}
+        <h1 class="text-3xl font-light text-center my-6">
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">{{ job.customerReference }}</span>
+        </h1>
+
+        {#
+            Customer info
+            Displayed if the job is ready to be sent, but just production file is missing
+        #}
+        {% if is_granted('ROLE_CUSTOMER', job) and job.status == 1 and job.jobFiles.count == 0 %}
+            <div
+                class="
+                    p-3 my-6
+                    border border-blue-400 rounded-lg
+                    bg-blue-50
+                    text-blue-400
+                    flex items-center
+                "
+            >
+                <div><i class="fas fa-info text-2xl mx-3"></i></div>
+
+                <div>Il ne manque plus que le fichier de production pour pouvoir soumettre le job à ATC.</div>
+            </div>
+        {% endif %}
+
+        {# Stand-by info #}
+        {% if job.status == 8 and is_granted('ROLE_COMPANY_USER')%}
+            <div
+                    class="
+                    p-3 my-6
+                    border border-blue-400 rounded-lg
+                    bg-blue-50
+                    text-blue-400
+                    flex items-center
+                "
+            >
+                <div><i class="fas fa-info text-2xl mx-3"></i></div>
+
+                <div>{{ job.standbyComment }}</div>
+            </div>
+        {% endif %}
+
+        {# Reject info #}
+        {% if is_granted('ROLE_COMPANY_USER', job) and job.status == 5 %}
+            <div
+                    class="
+                    p-3 my-10
+                    border border-red-500 rounded-lg
+                    bg-red-50
+                    text-red-500
+                    flex items-center
+                "
+            >
+                <div><i class="fas fa-skull-crossbones text-2xl ml-3 mr-5"></i></div>
+
+                <div>
+                    <h3 class="text-xl mb-2"> Message du client</h3>
+                    <p>{{ job.rejectComment|nl2br }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Actions #}
+        {{ include('job/_view_actions.html.twig') }}
+
+        {# Infos #}
+        {{ include('job/_view_info.html.twig') }}
+
+        {# JobFiles #}
+        {{ include('job/_view_job_files.html.twig') }}
+
+        {# ValidationFiles #}
+        {{ include('job/_view_validation_files.html.twig') }}
+
+        {# Delivery #}
+        {{ include('job/_view_delivery.html.twig') }}
+
+        {# History #}
+        {{ include('job/_view_history.html.twig') }}
+    </div>
+{% endblock %}

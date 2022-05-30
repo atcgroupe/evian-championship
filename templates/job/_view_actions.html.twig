@@ -1,0 +1,148 @@
+{# Title #}
+<h2
+        class="
+        flex justify-between items-center
+        mt-12 px-3 py-5
+        rounded-r-xl
+        border-l-8 border-prunoise
+        text-2xl text-prunoise
+        bg-gray-100
+        font-light
+    "
+>
+    Actions
+</h2>
+
+{# Actions #}
+<div class="mt-6">
+    {# Customer actions #}
+    {% if is_granted('UPDATE_STATUS_FROM_CREATED_TO_SENT', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_sent', { id: job.id }),
+            label: 'Envoyer à ATC',
+            icon: 'fas fa-file-import',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% elseif is_granted('UPDATE_STATUS_FROM_APPROVAL', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_check', { id: job.id }),
+            label: 'Vérifier le Bon à Tirer',
+            icon: 'fas fa-check',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {# CUSTOMER: Delete the job #}
+    {% if is_granted('DELETE', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_delete', { id: job.id }),
+            label: 'Supprimer ce job',
+            style: 'danger',
+            icon: 'fas fa-times',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {# CUSTOMER: Check Job #}
+    {% if job.validationFiles.count > 0 and (job.status > 5 or is_granted('ROLE_COMPANY_USER')) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_check', { id: job.id }),
+            label: 'Voir le Bon à Tirer',
+            icon: 'fas fa-eye',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full'
+        }) }}
+    {% endif %}
+
+    {# CUSTOMER: Ask to modify the job #}
+    {% if is_granted('REQUEST_UPDATE_STATUS_TO_CREATED', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_request_update_to_created', { id: job.id }),
+            label: 'Demander à modifier ce job',
+            icon: 'fas fa-hand-paper',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full'
+        }) }}
+    {% endif %}
+
+    {# CUSTOMER: Ask to cancel the job #}
+    {% if is_granted('REQUEST_UPDATE_STATUS_TO_CANCELED', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_request_update_to_canceled', { id: job.id }),
+            label: 'Demander l\'annulation de ce job',
+            style: 'danger',
+            icon: 'fas fa-times',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {# GRAPHIC_DESIGNER: Send to customer for approval #}
+    {% if is_granted('UPDATE_STATUS_FROM_SENT_TO_APPROVAL', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_approval', { id: job.id }),
+            label: 'Soumettre au client pour validation',
+            icon: 'fas fa-file-import',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full'
+        }) }}
+    {% endif %}
+
+    {# COMPANY_USER: Return the job to customer for update #}
+    {% if is_granted('UPDATE_STATUS_TO_CREATED', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_created', { id: job.id }),
+            label: 'Renvoyer au client pour modification',
+            icon: 'fas fa-file-import',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {# GRAPHIC_DESIGNER: Send the job to production #}
+    {% if is_granted('UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_production', { id: job.id }),
+            label: 'Envoyer en production',
+            icon: 'fas fa-file-import',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {# SHIPPING_MANAGER: Send the job to production #}
+    {% if is_granted('UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_production', { id: job.id }),
+            label: 'Marquer comme expédié',
+            icon: 'fas fa-file-import',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+
+    {% if is_granted('UPDATE_STATUS_TO_CANCELED', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_canceled', { id: job.id }),
+            label: 'Annuler de ce job',
+            style: 'danger',
+            icon: 'fas fa-times',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full',
+        }) }}
+    {% endif %}
+</div>

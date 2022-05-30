@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<div class="mx-auto h-full w-full flex items-center justify-center px-3">
+    <form class="" method="post">
+        <div class="flex justify-center">
+            <img class="inline-block" src="{{ asset('build/images/app/branding.svg') }}" alt="branding" width="400">
+        </div>
+
+        {# Title #}
+        <div class="flex justify-center items-center text-prunoise mt-3">
+            <div><i class="fas fa-paper-plane text-6xl -mr-3 mb-4"></i></div>
+
+            <h2 class="text-3xl px-2 border border-prunoise rounded-md text-prunoise bg-white shadow-md">JobFlow</h2>
+        </div>
+
+        {% if error %}
+            <div class="text-center p-3 border border-red-500 text-red-500 mt-8 rounded-md w-80 mx-auto">
+                <h2>Identifiants incorrects ou compte désactivé.</h2>
+                <p class="text-sm">Veuillez réessayer. Si le problème persiste, merci de contacter l'administrateur.</p>
+            </div>
+        {% endif %}
+
+        <div class="mt-6 px-3">
+            <div >
+                <label class="block px-3 mb-1 text-gray-500" for="inputEmail">Email</label>
+                <input
+                        type="email"
+                        value="{{ last_username }}"
+                        name="email"
+                        id="inputEmail"
+                        class="
+                            block w-full px-3 py-2
+                            border border-gray-400 focus:border-prunoise
+                            rounded
+                            outline outline-transparent
+                        "
+                        autocomplete="email"
+                        required
+                        autofocus
+                >
+            </div>
+
+            <div class="mt-5">
+                <label class="block px-3 mb-1 text-gray-500" for="inputPassword">Mot de passe</label>
+                <input
+                        type="password"
+                        value="{{ last_username }}"
+                        name="password"
+                        id="inputPassword"
+                        class="
+                            block w-full px-3 py-2
+                            border border-gray-400 focus:border-prunoise rounded
+                            outline outline-transparent
+                        "
+                        autocomplete="current-password"
+                        required
+                >
+            </div>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+
+            <button
+                class="
+                    mt-8 py-2
+                    border border-gray-500
+                    text-gray-500 hover:text-white text-xl
+                    hover:bg-prunoise hover:border-prunoise
+                    rounded-md
+                    w-full
+                "
+                type="submit"
+            >
+                Entrer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

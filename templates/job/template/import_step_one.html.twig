@@ -1,0 +1,97 @@
+{% extends 'core/core.html.twig' %}
+
+{% block main %}
+    <div class="max-w-screen-sm mx-auto">
+        {# Title #}
+        <h1 class="text-3xl font-light text-center my-6">
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">Importer des Jobs</span>
+        </h1>
+
+        <p class="p-4 rounded-md bg-blue-100 text-gray-500">
+            L'import de jobs se déroulera en 3 étapes:<br />
+            - L'import du gabarit Excel<br />
+            - la vérification des données<br />
+            - puis la validation de l'import.<br />
+            Attention: Seul le fichier gabarit doit être importé car celui-ci est formaté spécialement pour
+            l'import de données. Si vous n'avez pas utilisé le gabarit, celui-ci est téléchargeable depuis l'onglet
+            "suivi des jobs" ou en cliquant
+            <a
+                href="{{ path('job_import_template_download') }}"
+                class="px-1 border border-prunoise rounded-md bg-white">
+                ici
+            </a>
+        </p>
+
+        {# Steps #}
+        <div class="mt-10 mx-3">
+            <h2 class="text-xl text-prunoise text-center font-light">Etape 1: Importer le gabarit Excel</h2>
+
+            <div class="border-b border-prunoise mt-12"></div>
+
+            <div class="flex justify-between items-center -mt-7">
+                {# step 1 #}
+                <div
+                        class="
+                    rounded-full
+                    border border-prunoise
+                    bg-prunoise
+                    text-white
+                    shadow-md
+                    w-14 h-14
+                    flex justify-center items-center
+                    text-2xl
+                "
+                >
+                    <div>1</div>
+                </div>
+
+                {# step 2 #}
+                <div
+                        class="
+                    rounded-full
+                    border border-prunoise
+                    bg-white
+                    shadow-md
+                    text-prunoise
+                    w-14 h-14
+                    flex justify-center items-center
+                    text-2xl
+                "
+                >
+                    <div>2</div>
+                </div>
+
+                {# step 3 #}
+                <div
+                        class="
+                    rounded-full
+                    border border-prunoise
+                    text-prunoise
+                    bg-white
+                    shadow-md
+                    w-14 h-14
+                    flex justify-center items-center
+                    text-2xl
+                "
+                >
+                    <div>3</div>
+                </div>
+            </div>
+        </div>
+
+        {{ form_start(form, { attr: { 'novalidate': 'novalidate', 'class': 'max-w-screen-sm mx-auto mt-6' } }) }}
+        {{ form_widget(form) }}
+
+        <div class="grid gap-4 grid-cols-2 mt-8">
+            {{ include('component/button/button.html.twig', {
+                'href': path('job_index'),
+                'label': 'Annuler',
+            }) }}
+
+            {{ include('component/button/button.html.twig', {
+                'label': 'Vérifier les données',
+            }) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

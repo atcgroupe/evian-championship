@@ -1,0 +1,159 @@
+{% extends 'core/core.html.twig' %}
+
+{% block main %}
+    <div class="max-w-screen-lg mx-auto">
+        {# nav #}
+        <p class="text-sm text-gray-400 flex items-center mb-6">
+            <i class="fas fa-bars mr-2"></i>
+            <a href="{{ path('job_index') }}" class="hover:text-gray-800 mr-1">Suivi des jobs</a> /
+            <a href="{{ path('job_view', { id: job.id }) }}" class="hover:text-gray-800 mx-1">
+                {{ job.customerReference }}
+            </a> /
+            Validation
+        </p>
+
+        {# Title #}
+        <h1 class="text-3xl font-light text-center mt-6">
+            <span class="px-2 border border-prunoise rounded-md text-prunoise">{{ job.customerReference }}</span>
+        </h1>
+
+        {% if is_granted('UPDATE_STATUS_FROM_APPROVAL', job) %}
+        <h2 class="text-3xl text-gray-500 font-light text-center mt-6">
+            Vérification du BAT
+        </h2>
+        {% endif %}
+
+        {# Validation files #}
+        <div class="mt-10">
+            {% for file in job.validationFiles %}
+                <div class="border border-gray-400 shadow-lg mt-6">
+                    <img src="{{ asset(file.publicPath) }}" alt="BAT {{ file.sourceName }}" />
+                </div>
+            {% endfor %}
+
+            <div class="mt-3 flex justify-center">
+                <div class="p-3 border border-prunoise rounded-lg mt-3">
+                    {% set titleColsClass = 'text-prunoise text-right px-2' %}
+                    {% set dataColsClass = 'text-left px-2' %}
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="{{ titleColsClass }}">Matière</td>
+                            <td class="{{ dataColsClass }}">{{ job.product.name }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="{{ titleColsClass }}">Format visible</td>
+                            <td class="{{ dataColsClass }}">{{ job.width }} x {{ job.height }} mm</td>
+                        </tr>
+
+                        <tr>
+                            <td class="{{ titleColsClass }}">Format total</td>
+                            <td class="{{ dataColsClass }}">{{ job.width + job.leftBleed + job.rightBleed }} x {{ job.height + job.topBleed + job.bottomBleed }} mm</td>
+                        </tr>
+
+                        {% if job.leftBleed > 0 or job.rightBleed > 0 or job.topBleed > 0 or job.bottomBleed > 0 %}
+                            <tr>
+                                <td class="{{ titleColsClass }}">Fond perdu</td>
+                                <td class="{{ dataColsClass }}">
+                                    <span class="text-prunoise">G</span>{{ job.leftBleed }} -
+                                    <span class="text-prunoise">D</span>{{ job.rightBleed }} -
+                                    <span class="text-prunoise">H</span>{{ job.topBleed }} -
+                                    <span class="text-prunoise">B</span>{{ job.bottomBleed }}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        <tr>
+                            <td class="{{ titleColsClass }}">Quantité</td>
+                            <td class="{{ dataColsClass }}">{{ job.displayQuantity }}</td>
+                        </tr>
+
+                        {% if job.finish is not null %}
+                            <tr>
+                                <td class="{{ titleColsClass }}">Finition</td>
+                                <td class="{{ dataColsClass }}">{{ job.finish }}</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {# Form #}
+        {% if is_granted('UPDATE_STATUS_FROM_APPROVAL', job) %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 mb-12">
+                {# Reject #}
+                <div>
+                    <a
+                        href="{{ path('job_reject', {id: job.id}) }}"
+                        class="
+                            flex justify-center items-center
+                            p-4
+                            border border-red-500 rounded-lg
+                            text-red-500
+                            text-xl
+                            hover:bg-red-50
+                        "
+                    >
+                        <div><i class="fas fa-times text-3xl mr-3"></i></div>
+
+                        <div>Rejeter</div>
+                    </a>
+
+                    <div class="text-red-500 p-2 mt-2 text-center bg-red-50 rounded-lg">
+                        Il y a une erreur dans le BAT
+                    </div>
+                </div>
+
+                {# Update #}
+                <div>
+                    <a
+                        href="{{ path('job_modify', {id: job.id}) }}"
+                        class="
+                            flex justify-center items-center
+                            p-4
+                            border border-orange-500 rounded-lg
+                            text-orange-500
+                            text-xl
+                            hover:bg-orange-50
+                        "
+                    >
+                        <div><i class="fas fa-edit text-3xl mr-3"></i></div>
+
+                        <div>Modifier</div>
+                    </a>
+
+                    <div class="text-orange-500 p-2 mt-2 text-center bg-orange-50 rounded-lg">
+                        Je me suis trompé dans le fichier, la matière ou la finition.<br>
+                        je souhaite donc modifier ce job
+                    </div>
+                </div>
+
+                {# Approve #}
+                <div>
+                    <a
+                        href="{{ path('job_approve', {id: job.id}) }}"
+                        class="
+                            flex justify-center items-center
+                            p-4
+                            border border-green-500 rounded-lg
+                            text-green-500
+                            text-xl
+                            hover:bg-green-50
+                        "
+                    >
+                        <div><i class="fas fa-check text-3xl mr-3"></i></div>
+
+                        <div>Approuver</div>
+                    </a>
+
+                    <div class="text-green-500 p-2 mt-2 text-center bg-green-50 rounded-lg">
+                        Tout est OK, je valide
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
