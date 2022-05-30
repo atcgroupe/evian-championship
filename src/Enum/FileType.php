@@ -6,4 +6,5 @@ enum FileType
 {
     case PRODUCTION;
     case VALIDATION;
+    case TEMPLATE;
 }
