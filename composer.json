@@ -1,6 +1,16 @@
 {
+    "name": "atcgroupe/castorama",
+    "version": "1.0.1",
     "type": "project",
     "license": "proprietary",
+    "authors": [
+        {
+            "name": "Pierre Gaimard",
+            "email": "pierre@atc-groupe.com",
+            "homepage": "https://castorama.atc-web2print.com",
+            "role": "Developer"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
