@@ -55,15 +55,15 @@
 
                     <div class="text-gray-500">
                         {% if user.isActive %}
-                            {% set status = 'ACTIF' %}
-                            {% set color = 'green' %}
+                            <span class="border border-green-400 rounded-full px-1 text-green-500 text-xs mr-2">
+                                ACTIF
+                            </span>
                         {% else %}
-                            {% set status = 'DÉSACTIVÉ' %}
-                            {% set color = 'red' %}
+                            <span class="border border-red-500 rounded-full px-1 text-red-500 text-xs mr-2">
+                                DÉSACTIVÉ
+                            </span>
                         {% endif %}
-                        <span class="border border-{{ color }}-400 rounded-full px-1 text-{{ color }}-400 text-xs mr-2">
-                            {{ status }}
-                        </span>
+
 
                         <a
                             href="{{ path('admin_user_update', { id: user.id }) }}"
