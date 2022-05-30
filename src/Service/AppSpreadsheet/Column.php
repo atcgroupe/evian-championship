@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Xlsx;
+namespace App\Service\AppSpreadsheet\AppWorksheet;
 
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
@@ -14,7 +14,7 @@ class Column
     public function __construct(
         public readonly string $label,
         public readonly int $width,
-        public readonly string $alignment = self::ALIGN_LEFT,
+        public readonly string $horizontalAlignment = self::ALIGN_LEFT,
         public readonly bool $addTotal = false,
     ) {}
 }
