@@ -4,9 +4,11 @@ namespace App\Service;
 
 use App\Entity\Job;
 use App\Repository\JobRepository;
-use App\Service\Xlsx\Column;
-use App\Service\Xlsx\XlsxReportHelper;
-use PhpOffice\PhpSpreadsheet\Exception;
+use App\Service\AppSpreadsheet\AppSpreadsheet;
+use App\Service\AppSpreadsheet\AppWorksheetBuilder;
+use App\Service\AppSpreadsheet\CellAlignment;
+use App\Service\AppSpreadsheet\Column;
+use App\Service\AppSpreadsheet\AppWorksheetException;
 
 class JobReportingManager
 {
@@ -19,7 +21,7 @@ class JobReportingManager
 
     public function __construct(
         private JobRepository $jobRepository,
-        private XlsxReportHelper $reportHelper,
+        private AppWorksheetBuilder $appWorksheetBuilder,
     ) {
         $this->setData();
     }
@@ -42,13 +44,25 @@ class JobReportingManager
     /**
      * @param string $filename
      * @return void
-     * @throws Exception
+     * @throws AppWorksheetException
      */
     public function generateXlsxReport(string $filename)
     {
-        $this->reportHelper->initializeSpreadsheet();
-        $this->reportHelper->addWorksheet('Reporting', $this->getXlsxReportColumns(), $this->getXlsxReportData());
-        $this->reportHelper->save($filename);
+        $columns = $this->getXlsxReportColumns();
+        $data = $this->getXlsxReportData();
+        $spreadsheet = new AppSpreadsheet('Reporting');
+        $worksheet = $spreadsheet->getSheetByTitle('Reporting');
+        $this->appWorksheetBuilder->setHeader(
+            $worksheet,
+            sprintf(
+                'Reporting ATC Groupe | Evian Championship - (%s)',
+                (new \DateTime('now', new \DateTimeZone('Europe/Paris')))->format('d/m/Y')
+            ),
+            count($columns)
+        );
+        $this->appWorksheetBuilder->setColumnsHeading($worksheet, $columns, 2);
+        $this->appWorksheetBuilder->setData($worksheet, $data, 3, $columns);
+        $spreadsheet->saveAsXlsx($filename);
     }
 
     /**
@@ -84,19 +98,19 @@ class JobReportingManager
             new Column('EMPLACEMENT', 40),
             new Column('DESCRIPTIF', 40),
             new Column('PRODUIT', 30),
-            new Column('LARGEUR', 15, Column::ALIGN_CENTER),
-            new Column('HAUTEUR', 15, Column::ALIGN_CENTER),
-            new Column('DÉBORD G.', 15, Column::ALIGN_CENTER),
-            new Column('DÉBORD D.', 15, Column::ALIGN_CENTER),
-            new Column('DÉBORD H.', 15, Column::ALIGN_CENTER),
-            new Column('DÉBORD B.', 15, Column::ALIGN_CENTER),
-            new Column('SURFACE (m2)', 15, Column::ALIGN_CENTER, true),
-            new Column('MODELES', 15, Column::ALIGN_CENTER),
-            new Column('EXEMPLAIRES', 15, Column::ALIGN_CENTER),
-            new Column('QTE. TOTALE', 15, Column::ALIGN_CENTER, true),
-            new Column('PRIX (€/m2)', 20, Column::ALIGN_CENTER),
-            new Column('PRIX UNITAIRE', 20, Column::ALIGN_CENTER),
-            new Column('PRIX TOTAL', 20, Column::ALIGN_CENTER, true),
+            new Column('LARGEUR', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('HAUTEUR', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('DÉBORD G.', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('DÉBORD D.', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('DÉBORD H.', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('DÉBORD B.', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('SURFACE (m2)', 15, CellAlignment::HORIZONTAL_CENTER, true),
+            new Column('MODELES', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('EXEMPLAIRES', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('QTE. TOTALE', 15, CellAlignment::HORIZONTAL_CENTER, true),
+            new Column('PRIX (€/m2)', 20, CellAlignment::HORIZONTAL_CENTER),
+            new Column('PRIX UNITAIRE', 20, CellAlignment::HORIZONTAL_CENTER),
+            new Column('PRIX TOTAL', 20, CellAlignment::HORIZONTAL_CENTER, true),
         ];
     }
 

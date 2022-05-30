@@ -189,9 +189,9 @@ class Job
         return $this->leftBleed;
     }
 
-    public function setLeftBleed(int $leftBleed): self
+    public function setLeftBleed(?int $leftBleed): self
     {
-        $this->leftBleed = $leftBleed;
+        $this->leftBleed = null === $leftBleed ? 0 : $leftBleed;
 
         return $this;
     }
@@ -201,9 +201,9 @@ class Job
         return $this->rightBleed;
     }
 
-    public function setRightBleed(int $rightBleed): self
+    public function setRightBleed(?int $rightBleed): self
     {
-        $this->rightBleed = $rightBleed;
+        $this->rightBleed = null === $rightBleed ? 0 : $rightBleed;
 
         return $this;
     }
@@ -213,9 +213,9 @@ class Job
         return $this->topBleed;
     }
 
-    public function setTopBleed(int $topBleed): self
+    public function setTopBleed(?int $topBleed): self
     {
-        $this->topBleed = $topBleed;
+        $this->topBleed = null === $topBleed ? 0 : $topBleed;
 
         return $this;
     }
@@ -225,9 +225,9 @@ class Job
         return $this->bottomBleed;
     }
 
-    public function setBottomBleed(int $bottomBleed): self
+    public function setBottomBleed(?int $bottomBleed): self
     {
-        $this->bottomBleed = $bottomBleed;
+        $this->bottomBleed = null === $bottomBleed ? 0 : $bottomBleed;
 
         return $this;
     }

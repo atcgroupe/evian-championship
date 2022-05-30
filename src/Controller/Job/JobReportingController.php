@@ -36,8 +36,17 @@ class JobReportingController extends AbstractJobController
         rename($temp, $file);
         $reportingManager->generateXlsxReport($file);
 
-        $response = new BinaryFileResponse($file, headers: ['Content-Type' => 'application/vnd.ms-excel']);
-        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'test.xlsx');
+        $response = new BinaryFileResponse(
+            $file,
+            headers: ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+        );
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            sprintf(
+                'ATC Groupe Reporting %s.xlsx',
+                (new \DateTime('now', new \DateTimeZone('Europe/Paris')))->format('d-m-Y')
+            )
+        );
         return $response;
     }
 }
