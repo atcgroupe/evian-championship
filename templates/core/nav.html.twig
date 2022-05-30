@@ -25,7 +25,7 @@
                 </a>
 
                 {# Menu #}
-                <div class="flex items-center justify-between hidden lg:block sm:ml-5 h-full">
+                <div class="flex items-center justify-between hidden xl:block sm:ml-5 h-full">
                     {{ include('component/nav/navbar_menu_item.html.twig', {
                         href: path('job_index'),
                         label: 'Suivi des jobs'
@@ -74,12 +74,12 @@
                 </div>
 
                 {# User #}
-                <div class="hidden lg:block px-3.5 py-1.5 rounded-full bg-prunoise text-white text-xl">
+                <div class="hidden xl:block px-3.5 py-1.5 rounded-full bg-prunoise text-white text-xl">
                     <a href="{{ path('user_settings_index') }}">{{ app.user.displayName('navbar') }}</a>
                 </div>
 
                 {# Button for mobile menu #}
-                <div class="lg:hidden" data-action="click->navbar#toggle">
+                <div class="xl:hidden" data-action="click->navbar#toggle">
                     <i id="app_navbar_button" class="fas fa-bars text-3xl text-gray-500"></i>
                 </div>
             </div>
@@ -128,6 +128,18 @@
                     {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
                         href: path('delivery_index'),
                         label: 'Livraisons'
+                    }) }}
+                {% endif %}
+
+                {% if is_granted('ROLE_CUSTOMER') %}
+                    {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                        href: path('job_import_template_download'),
+                        label: 'Télécharger le gabarit d\'import de jobs'
+                    }) }}
+
+                    {{ include('component/nav/navbar_mobile_menu_item.html.twig', {
+                        href: path('job_import_template_upload'),
+                        label: 'Importer des jobs'
                     }) }}
                 {% endif %}
             </ul>

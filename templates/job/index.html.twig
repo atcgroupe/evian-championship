@@ -14,7 +14,7 @@
             <span class="px-2 border border-prunoise rounded-md text-prunoise">Suivi des jobs</span>
         </h1>
 
-        <div class="w-full max-w-screen-md mx-auto mt-12">
+        <div class="w-full max-w-screen-md mx-auto mt-10">
             <div
                 class="
                     flex justify-start items-center
@@ -48,7 +48,7 @@
         {% set theadCellClass = 'px-3 py-4 font-medium border border-gray-300 text-gray-700 text-left' %}
 
         {% if is_granted('ROLE_CUSTOMER') %}
-            <div class="text-center md:text-right">
+            <div class="hidden xl:block text-right mt-6 md:mt-0">
                 {{ include('component/button/button.html.twig', {
                     href: path('job_import_template_download'),
                     label: 'Gabarit jobs',
@@ -74,7 +74,7 @@
             class="
                 mx-auto
                 w-full
-                mt-3
+                mt-10 xl:mt-3
                 border-collapse border border-gray-300
                 text-sm
             "
@@ -82,12 +82,12 @@
             <thead>
                 <tr class="font-light bg-gray-100">
                     <th class="{{ theadCellClass }} sort text-center" data-sort="ref">REF</th>
-                    <th class="{{ theadCellClass }} sort" data-sort="location">EMPLACEMENT</th>
-                    <th class="{{ theadCellClass }} sort max-w-xs" data-sort="info">DESCRIPTIF</th>
-                    <th class="{{ theadCellClass }} sort" data-sort="product">PRODUIT</th>
-                    <th class="{{ theadCellClass }} text-center w-10">FORMAT</th>
-                    <th class="{{ theadCellClass }} text-center">QUANTITÉ</th>
-                    <th class="{{ theadCellClass }} text-center">LIVRAISON</th>
+                    <th class="{{ theadCellClass }} sort hidden lg:table-cell" data-sort="location">EMPLACEMENT</th>
+                    <th class="{{ theadCellClass }} sort hidden lg:table-cell max-w-xs" data-sort="info">DESCRIPTIF</th>
+                    <th class="{{ theadCellClass }} sort hidden md:table-cell" data-sort="product">PRODUIT</th>
+                    <th class="{{ theadCellClass }} text-center hidden md:table-cell w-10">FORMAT</th>
+                    <th class="{{ theadCellClass }} text-center hidden xl:table-cell">QUANTITÉ</th>
+                    <th class="{{ theadCellClass }} text-center hidden md:table-cell">LIVRAISON</th>
                     <th class="{{ theadCellClass }} sort text-center" data-sort="status">STATUT</th>
                 </tr>
             </thead>
@@ -109,12 +109,12 @@
                     data-route="{{ path('job_view', { id: job.id }) }}"
                 >
                     <td class="{{ tbodyCellClass }} ref text-center">{{ job.customerReference }}</td>
-                    <td class="{{ tbodyCellClass }} location ">{{ job.location }}</td>
-                    <td class="{{ tbodyCellClass }} info max-w-xs truncate">{{ job.description }}</td>
-                    <td class="{{ tbodyCellClass }} product">{{ job.product.name }}</td>
-                    <td class="{{ tbodyCellClass }} text-center w-10">{{ job.width }}x{{ job.height }}</td>
-                    <td class="{{ tbodyCellClass }} text-center">{{ job.displayQuantity }}</td>
-                    <td class="{{ tbodyCellClass }} text-center">
+                    <td class="{{ tbodyCellClass }} location hidden lg:table-cell">{{ job.location }}</td>
+                    <td class="{{ tbodyCellClass }} info hidden lg:table-cell max-w-xs truncate">{{ job.description }}</td>
+                    <td class="{{ tbodyCellClass }} product hidden md:table-cell">{{ job.product.name }}</td>
+                    <td class="{{ tbodyCellClass }} text-center hidden md:table-cell w-10">{{ job.width }}x{{ job.height }}</td>
+                    <td class="{{ tbodyCellClass }} text-center hidden xl:table-cell">{{ job.displayQuantity }}</td>
+                    <td class="{{ tbodyCellClass }} text-center hidden md:table-cell">
                         {% if job.delivery is not null %}
                             {{ job.delivery.title }} <span class="italic">({{ job.delivery.date|date('d/m') }})</span>
                         {% else %}
