@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
@@ -17,57 +19,70 @@ class Job
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups('api_job_get')]
     private $id;
 
     #[ORM\Column(type: 'string', length: 100)]
     #[Assert\NotBlank(message: 'La référence n\'est pas définie')]
     #[Assert\Length(max: 100, maxMessage: 'La référence du job peut comporter au maximum 100 caractères.')]
+    #[Groups('api_job_get')]
     private $customerReference;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     #[Assert\Length(max: 100, maxMessage: 'La localisation peut comporter au maximum 100 caractères.')]
+    #[Groups('api_job_get')]
     private $location;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: 'La description du job peut comporter au maximum 255 caractères.')]
+    #[Groups('api_job_get')]
     private $description;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'La largeur du Job n\'est pas définie')]
+    #[Groups('api_job_get')]
     private $width;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'La hauteur du Job n\'est pas définie')]
+    #[Groups('api_job_get')]
     private $height;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\PositiveOrZero(message: 'Le débord gauche doit être un entier positif')]
+    #[Groups('api_job_get')]
     private $leftBleed;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\PositiveOrZero(message: 'Le débord droit doit être un entier positif')]
+    #[Groups('api_job_get')]
     private $rightBleed;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\PositiveOrZero(message: 'Le débord haut doit être un entier positif')]
+    #[Groups('api_job_get')]
     private $topBleed;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\PositiveOrZero(message: 'Le débord bas doit être un entier positif')]
+    #[Groups('api_job_get')]
     private $bottomBleed;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: 'La finition du job peut comporter au maximum 255 caractères.')]
+    #[Groups('api_job_get')]
     private $finish;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'Le nombre de visuels n\'est pas définie')]
     #[Assert\Positive(message: 'Ce nombre ne peut être qu\'un un entier positif')]
+    #[Groups('api_job_get')]
     private $imageCount;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'La quantité pour chaque modèle n\'est pas définie')]
     #[Assert\Positive(message: 'Ce nombre ne peut être qu\'un entier positif')]
+    #[Groups('api_job_get')]
     private $imageQuantity;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -91,6 +106,7 @@ class Job
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('api_job_get')]
     private $product;
 
     #[ORM\OneToMany(mappedBy: 'job', targetEntity: JobFile::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -433,6 +449,8 @@ class Job
     /**
      * @return string
      */
+    #[Groups('api_job_get')]
+    #[SerializedName('displayQuantity')]
     public function getDisplayQuantity(): string
     {
         if ($this->getImageCount() == 1) {
@@ -533,5 +551,55 @@ class Job
     public function getTotalBleedSurface(): float
     {
         return $this->getUnitBleedSurface() * $this->getTotalQuantity();
+    }
+
+    /**
+     * @return string
+     */
+    #[Groups('api_job_get')]
+    #[SerializedName('displayVisibleFormat')]
+    public function getDisplayVisibleFormat(): string
+    {
+        return sprintf('%s x %s mm', $this->getWidth(), $this->getHeight());
+    }
+
+    /**
+     * @return string
+     */
+    #[Groups('api_job_get')]
+    #[SerializedName('displayTotalFormat')]
+    public function getDisplayTotalFormat(): string
+    {
+        return sprintf(
+            '%s x %s mm',
+            $this->getWidth() + $this->getLeftBleed() + $this->getRightBleed(),
+            $this->getHeight() + $this->getTopBleed() + $this->getBottomBleed()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    #[Groups('api_job_get')]
+    #[SerializedName('displayBleed')]
+    public function getDisplayBleed(): string
+    {
+        return sprintf(
+            'Gauche:%s - Droite:%s - Haut:%s - Bas:%s',
+            $this->getLeftBleed(),
+            $this->getRightBleed(),
+            $this->getTopBleed(),
+            $this->getBottomBleed()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    #[Groups('api_job_get')]
+    #[SerializedName('displayDate')]
+    public function getDisplayDate(): string
+    {
+        return (new \DateTime('now', New \DateTimeZone('Europe/Paris')))->format('d/m/Y');
     }
 }
