@@ -1,6 +1,6 @@
 {
     "name": "atcgroupe/castorama",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "type": "project",
     "license": "proprietary",
     "authors": [
@@ -35,6 +35,7 @@
         "symfony/proxy-manager-bridge": "5.4.*",
         "symfony/runtime": "5.4.*",
         "symfony/security-bundle": "5.4.*",
+        "symfony/serializer": "5.4.*",
         "symfony/string": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
         "symfony/validator": "5.4.*",
