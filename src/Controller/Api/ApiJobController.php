@@ -14,10 +14,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -36,18 +38,18 @@ class ApiJobController extends AbstractController
     }
 
     #[Route('', methods: ['GET'])]
-    public function getJobInfo(int $id): JsonResponse
+    public function getJobInfo(int $id): Response
     {
         $job = $this->jobRepository->find($id);
 
         if (!$job instanceof Job) {
-            return new JsonResponse(['message' => 'Not found'], 404);
+            return new Response($this->serializer->serialize(['message' => 'Not found'], 'xml'), 404);
         }
 
-        return new JsonResponse(
-            $this->serializer->serialize($job, 'json', ['groups' => 'api_job_get']),
-            status: 200,
-            json: true
+        return new Response(
+            $this->serializer->serialize($job, 'xml', ['groups' => 'api_job_get']),
+            200,
+            headers: ['Content-Type' => 'text/xml']
         );
     }
 
@@ -57,15 +59,23 @@ class ApiJobController extends AbstractController
         $job = $this->jobRepository->find($id);
 
         if (!$job instanceof Job) {
-            return new JsonResponse(['message' => 'Not found'], 404);
+            return new Response($this->serializer->serialize(['message' => 'Not found'], 'xml'), 404);
         }
 
         if ($job->getStatus() !== JobStatus::SENT->getValue()) {
-            return new JsonResponse(['message' => 'The job is not in SENT status'], 400);
+            return new Response(
+                $this->serializer->serialize(['message' => 'The job is not in SENT status'], 'xml'), 400
+            );
         }
 
         /** @var UploadedFile $file */
         $file = $request->files->get('file');
+
+        if (!$file instanceof UploadedFile) {
+            return new Response(
+                $this->serializer->serialize(['message' => 'File not found'], 'xml'), 400
+            );
+        }
 
         if ($file) {
             try {
@@ -75,7 +85,9 @@ class ApiJobController extends AbstractController
                 $job->addValidationFile(new ValidationFile($job, $safeName, $originalName));
 
             } catch (FileException $exception) {
-                return new JsonResponse(['message' => $exception->getMessage()], 400);
+                return new Response(
+                    $this->serializer->serialize(['message' => $exception->getMessage()], 'xml'), 500
+                );
             }
         }
 
@@ -86,9 +98,8 @@ class ApiJobController extends AbstractController
             JobEvent::VALIDATION_FILE_ADDED->getEvent()
         );
 
-        return new JsonResponse(
-            ['message' => 'Validation file has been uploaded successfully'],
-            201
+        return new Response(
+            $this->serializer->serialize(['message' => 'Validation file has been uploaded successfully'], 'xml'), 201
         );
     }
 }
