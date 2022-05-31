@@ -28,6 +28,7 @@ security:
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api, ip: [127.0.0.1, 85.69.168.90]}
         - { path: ^/, roles: [ROLE_CUSTOMER, ROLE_PROJECT_MANAGER, ROLE_GRAPHIC_DESIGNER, ROLE_SHIPPING_MANAGER] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
