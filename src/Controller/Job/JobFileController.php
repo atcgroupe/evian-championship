@@ -145,7 +145,10 @@ class JobFileController extends AbstractJobController
     ): BinaryFileResponse {
         $file = $fileRepository->findWithRelations($fileId);
         $response = new BinaryFileResponse($fileManager->getPath($file));
-        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $file->getSourceName());
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            sprintf('%s - %s', $file->getJob()->getId(), $file->getSourceName())
+        );
 
         return $response;
     }
