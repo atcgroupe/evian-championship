@@ -54,6 +54,9 @@
 
             {{ include('component/button/button.html.twig', {
                 'label': 'Enregistrer',
+                icon: 'fas fa-spinner',
+                iconClass: 'text-xl mr-2',
+                processing: true
             }) }}
         </div>
         {{ form_end(form) }}

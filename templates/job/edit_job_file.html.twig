@@ -16,9 +16,14 @@
             }) }}
 
             {{ include('component/button/button.html.twig', {
-                'label': 'Ajouter le fichier',
+                label: 'Ajouter le fichier',
+                icon: 'fas fa-spinner',
+                iconClass: 'text-xl mr-2',
+                processing: true
             }) }}
         </div>
+
+        <div class="hidden animate-spin"></div>
 
         {{ form_end(form) }}
     </div>
