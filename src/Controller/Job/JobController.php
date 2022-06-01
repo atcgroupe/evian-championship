@@ -153,7 +153,7 @@ class JobController extends AbstractJobController
     #[Route('/{id}/delete', name: '_delete')]
     public function delete(int $id): Response
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->jobRepository->findWithRelations($id);
 
         if (!$this->isGranted('DELETE', $job)) {
             $this->addFlash('danger', "Vous n'avez pas les droits pour supprimer un Job.");
@@ -161,6 +161,8 @@ class JobController extends AbstractJobController
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }
 
+        $this->fileManager->removeAll($job->getJobFiles());
+        $this->fileManager->removeAll($job->getValidationFiles());
         $this->manager->remove($job);
         $this->manager->flush();
 
