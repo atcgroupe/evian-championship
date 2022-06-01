@@ -11,6 +11,7 @@
     - style: info|danger - default: secondary
     - width: full|fit - default: fit
     - rounded: true|false
+    - processing: true|false (add a load spinner on click)
 #}
 
 {# Default options #}
@@ -66,11 +67,20 @@
         {% set buttonType = type %}
     {% endif %}
 
+    {# processing (spinner)#}
+    {% if processing is not defined %}
+        {% set processing = false %}
+    {% endif %}
+
 {# Template #}
 <{{ tag }}
     {% if tag == 'a' %}href="{{ href }}"{% endif %}
     {% if tag == 'button' %}type="{{ buttonType }}"{% endif %}
     {% if id is defined %}id="{{ id }}"{% endif %}
+    {% if processing == true %}
+        data-controller="button"
+        data-action="click->button#click"
+    {% endif %}
     class="
         {% if label is defined %}
             items-center justify-center
@@ -87,10 +97,22 @@
     "
 >
     {% if icon is defined %}
-        <i class="block {{ icon }} {% if iconClass is defined %}{{ iconClass }}{% endif %}"></i>
+        <i
+            class="
+                block {{ icon }}
+                {% if iconClass is defined %}{{ iconClass }}{% endif %}
+                {% if processing == true %}animate-spin{% endif %}
+            "
+            {% if processing == true %}{{ stimulus_target('button', 'spinner') }}{% endif %}
+        ></i>
     {% endif %}
 
     {% if label is defined %}
-        <span {% if labelClass is defined %}class="ml-2 {{ labelClass }}"{% endif %}>{{ label }}</span>
+        <span
+            {% if labelClass is defined %}class="ml-2 {{ labelClass }}"{% endif %}
+            {% if processing == true %}{{ stimulus_target('button', 'label') }}{% endif %}
+        >
+            {{ label }}
+        </span>
     {% endif %}
 </{{ tag }}>

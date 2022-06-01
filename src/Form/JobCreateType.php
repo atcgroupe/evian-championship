@@ -133,11 +133,11 @@ class JobCreateType extends AbstractType
                 [
                     'mapped' => false,
                     'label' => 'Fichier de production',
-                    'help' => 'Seuls les fichiers au format Pdf sont pris en compte. Le poid maximum est de 510Mo',
+                    'help' => 'Seuls les fichiers au format Pdf sont pris en compte. Le poid maximum est de 100Mo',
                     'required' => false,
                     'constraints' => [
                         new File([
-                            'maxSize' => '510M',
+                            'maxSize' => '100M',
                             'mimeTypes' => [
                                 'application/pdf',
                                 'application/x-pdf',

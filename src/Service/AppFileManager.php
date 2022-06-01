@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\AbstractAppFile;
 use App\Entity\Job;
 use App\Enum\FileType;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -34,9 +35,24 @@ class AppFileManager
         return $safeName;
     }
 
+    /**
+     * @param AbstractAppFile $file
+     * @return void
+     */
     public function remove(AbstractAppFile $file): void
     {
         $this->filesystem->remove($this->getFileDir($file->getType()) . '/' . $file->getName());
+    }
+
+    /**
+     * @param PersistentCollection $files
+     * @return void
+     */
+    public function removeAll(PersistentCollection $files): void
+    {
+        foreach ($files as $file) {
+            $this->remove($file);
+        }
     }
 
     /**
