@@ -6,6 +6,7 @@ use App\Entity\Job;
 use App\Entity\JobLog;
 use App\Entity\User;
 use App\Enum\JobStatus;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Security;
@@ -16,7 +17,7 @@ class JobLogManager
 
     public function __construct(
         private Security $security,
-        private ManagerRegistry $managerRegistry
+        private ManagerRegistry $managerRegistry,
     ) {
         $this->manager = $this->managerRegistry->getManager();
     }
@@ -30,7 +31,9 @@ class JobLogManager
     {
         /** @var User $user */
         $user = $this->security->getUser();
-        $log = new JobLog($job, $user->getDisplayName('log'), $action);
+        $userName = ($user instanceof User) ? $user->getDisplayName('log') : 'API Flow';
+
+        $log = new JobLog($job, $userName, $action);
         $job->addJobLog($log);
         $this->manager->persist($log);
         $this->manager->flush();

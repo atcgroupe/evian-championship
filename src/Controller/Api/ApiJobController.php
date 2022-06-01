@@ -9,15 +9,11 @@ use App\Enum\JobEvent;
 use App\Enum\JobStatus;
 use App\Event\AppJobEvent;
 use App\Repository\JobRepository;
-use App\Service\AppFileManager;
+use App\Service\AppApiFileManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,7 +50,7 @@ class ApiJobController extends AbstractController
     }
 
     #[Route('/validation-file', methods: ['POST'])]
-    public function postJobValidationFile(int $id, Request $request, AppFileManager $fileManager)
+    public function postJobValidationFile(int $id, Request $request, AppApiFileManager $fileManager)
     {
         $job = $this->jobRepository->find($id);
 
@@ -64,33 +60,15 @@ class ApiJobController extends AbstractController
 
         if ($job->getStatus() !== JobStatus::SENT->getValue()) {
             return new Response(
-                $this->serializer->serialize(['message' => 'The job is not in SENT status'], 'xml'), 400
+                $this->serializer->serialize(['message' => 'The job is not in SENT status'], 'xml'),
+                400
             );
         }
 
-        /** @var UploadedFile $file */
-        $file = $request->files->get('file');
+        $filename = sprintf('%s - %s', $job->getId(), $job->getCustomerReference());
+        $safeName = $fileManager->saveFromRequestContent($request, $filename, FileType::VALIDATION);
 
-        if (!$file instanceof UploadedFile) {
-            return new Response(
-                $this->serializer->serialize(['message' => 'File not found'], 'xml'), 400
-            );
-        }
-
-        if ($file) {
-            try {
-                $originalName = $fileManager->getOriginalName($file);
-                $safeName = $fileManager->save($file, FileType::VALIDATION);
-
-                $job->addValidationFile(new ValidationFile($job, $safeName, $originalName));
-
-            } catch (FileException $exception) {
-                return new Response(
-                    $this->serializer->serialize(['message' => $exception->getMessage()], 'xml'), 500
-                );
-            }
-        }
-
+        $job->addValidationFile(new ValidationFile($job, $safeName, $filename));
         $this->manager->flush();
 
         $this->eventDispatcher->dispatch(
@@ -99,7 +77,8 @@ class ApiJobController extends AbstractController
         );
 
         return new Response(
-            $this->serializer->serialize(['message' => 'Validation file has been uploaded successfully'], 'xml'), 201
+            $this->serializer->serialize(['message' => 'Validation file has been uploaded successfully'], 'xml'),
+            201
         );
     }
 }

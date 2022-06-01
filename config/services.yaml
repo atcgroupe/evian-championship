@@ -31,6 +31,11 @@ services:
             $jobFileDir: '%app.job_file_dir%'
             $validationFileDir: '%app.validation_file_dir%'
 
+    App\Service\AppApiFileManager:
+        arguments:
+            $jobFileDir: '%app.job_file_dir%'
+            $validationFileDir: '%app.validation_file_dir%'
+
     App\Service\AppSpreadsheet\AppSpreadsheetReader:
         arguments:
             $templateFileDir: '%app.template_file_dir%'
