@@ -52,7 +52,7 @@ class ApiJobController extends AbstractController
     #[Route('/validation-file', methods: ['POST'])]
     public function postJobValidationFile(int $id, Request $request, AppApiFileManager $fileManager)
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->jobRepository->findWithRelations($id);
 
         if (!$job instanceof Job) {
             return new Response($this->serializer->serialize(['message' => 'Not found'], 'xml'), 404);
@@ -65,7 +65,7 @@ class ApiJobController extends AbstractController
             );
         }
 
-        $filename = sprintf('%s - %s', $job->getId(), $job->getCustomerReference());
+        $filename = $fileManager->getFilename($job);
         $safeName = $fileManager->saveFromRequestContent($request, $filename, FileType::VALIDATION);
 
         $job->addValidationFile(new ValidationFile($job, $safeName, $filename));
