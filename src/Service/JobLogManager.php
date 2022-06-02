@@ -78,7 +78,11 @@ class JobLogManager
             return 'Envoi du job à ATC';
         }
 
-        if ($preStatus === JobStatus::SENT && $postStatus === JobStatus::APPROVAL) {
+        if ($preStatus === JobStatus::SENT && $postStatus === JobStatus::PAO) {
+            return 'Prise en charge du job en PAO';
+        }
+
+        if ($preStatus === JobStatus::PAO && $postStatus === JobStatus::APPROVAL) {
             return 'Envoi du job pour Validation BAT';
         }
 

@@ -58,9 +58,9 @@ class ApiJobController extends AbstractController
             return new Response($this->serializer->serialize(['message' => 'Not found'], 'xml'), 404);
         }
 
-        if ($job->getStatus() !== JobStatus::SENT->getValue()) {
+        if ($job->getStatus() !== JobStatus::PAO->getValue()) {
             return new Response(
-                $this->serializer->serialize(['message' => 'The job is not in SENT status'], 'xml'),
+                $this->serializer->serialize(['message' => 'The job is not in PAO status'], 'xml'),
                 400
             );
         }

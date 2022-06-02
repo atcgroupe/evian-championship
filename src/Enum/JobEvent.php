@@ -6,6 +6,7 @@ enum JobEvent: int implements AppEnumInterface
 {
     case CREATED = 0; // A job has been created
     case SENT = 1; // A job has been sent to Company [ATC]
+    case PAO = 13; // A graphic designer is handling the job [ATC + CUSTOMER]
     case APPROVAL = 2; // A job has been sent to the Customer for approval [CUSTOMER]
     case APPROVED = 3; // The job has been approved [ATC]
     case REJECTED = 4; // The job has been rejected [ATC]
@@ -34,6 +35,7 @@ enum JobEvent: int implements AppEnumInterface
         {
             JobEvent::CREATED => 'job.created',
             JobEvent::SENT => 'job.sent',
+            JobEvent::PAO => 'job.pao',
             JobEvent::APPROVAL => 'job.sent.for.approval',
             JobEvent::APPROVED => 'job.approved',
             JobEvent::REJECTED => 'job.rejected',
@@ -60,6 +62,7 @@ enum JobEvent: int implements AppEnumInterface
         return match($this)
         {
             JobEvent::SENT => "Lorsqu'un job a été envoyé à ATC pour traitement",
+            JobEvent::PAO => "Lorsqu'un job a été pris en PAO par un graphiste",
             JobEvent::APPROVAL => "Lorsque le BAT d'un job est disponible pour validation",
             JobEvent::APPROVED => "Lorsqu'un BAT a été validé",
             JobEvent::REJECTED => "Lorsqu'un BAT a été refusé",
@@ -79,6 +82,7 @@ enum JobEvent: int implements AppEnumInterface
         return match($this)
         {
             JobEvent::SENT => "Un nouveau job a été soumis par le client",
+            JobEvent::PAO => "Le job a été pris en PAO",
             JobEvent::APPROVAL => "Le BAT de ce job est disponible pour validation",
             JobEvent::APPROVED => "Le BAT de ce job a été approuvé par le client",
             JobEvent::REJECTED => "Le BAT de ce job a été rejeté par le client",
@@ -109,6 +113,7 @@ enum JobEvent: int implements AppEnumInterface
             JobEvent::SHIPPED,
             JobEvent::SENT_FOR_UPDATE
                 => JobEventGroup::CUSTOMER,
+            JobEvent::PAO,
             JobEvent::CANCELED,
             JobEvent::DELETED
                 => JobEventGroup::ALL,
