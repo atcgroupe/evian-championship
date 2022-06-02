@@ -86,8 +86,20 @@
         }) }}
     {% endif %}
 
+    {# GRAPHIC_DESIGNER: Get job for handling #}
+    {% if is_granted('UPDATE_STATUS_FROM_SENT_TO_PAO', job) %}
+        {{ include('component/button/button.html.twig', {
+            href: path('job_status_update_to_pao', { id: job.id }),
+            label: 'Prendre le job en charge en PAO',
+            icon: 'fas fa-hand-paper',
+            iconClass: 'mr-2 text-xl',
+            class: 'mt-3',
+            width: 'full'
+        }) }}
+    {% endif %}
+
     {# GRAPHIC_DESIGNER: Send to customer for approval #}
-    {% if is_granted('UPDATE_STATUS_FROM_SENT_TO_APPROVAL', job) %}
+    {% if is_granted('UPDATE_STATUS_FROM_PAO_TO_APPROVAL', job) %}
         {{ include('component/button/button.html.twig', {
             href: path('job_status_update_to_approval', { id: job.id }),
             label: 'Soumettre au client pour validation',

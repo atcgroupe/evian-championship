@@ -127,7 +127,7 @@ class JobValidationController extends AbstractJobController
     #[Route('/modify', name: '_modify')]
     public function modify(int $id): Response
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->jobRepository->findWithRelations($id);
 
         if (!$this->isGranted('UPDATE_STATUS_FROM_APPROVAL', $job)) {
             $this->addFlash('danger', "Vous n'avez pas les droits pour rejeter un BAT.");
@@ -136,6 +136,7 @@ class JobValidationController extends AbstractJobController
         }
 
         $this->logManager->addUpdateLog($job, JobStatus::from($job->getStatus()), JobStatus::CREATED);
+        $this->fileManager->removeAll($job->getValidationFiles());
         $job->setStatus(JobStatus::CREATED->getValue());
         $this->manager->flush();
 

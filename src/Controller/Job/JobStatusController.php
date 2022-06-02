@@ -6,7 +6,6 @@ use App\Enum\JobEvent;
 use App\Enum\JobStatus;
 use App\Event\AppJobEvent;
 use App\Form\JobStatusType;
-use App\Service\Notification\NotificationDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +21,7 @@ class JobStatusController extends AbstractJobController
      * @return Response
      */
     #[Route('/update', name: '_update')]
-    public function updateStatus(int $id, Request $request, NotificationDispatcher $dispatcher): Response
+    public function updateStatus(int $id, Request $request): Response
     {
         $job = $this->jobRepository->find($id);
         $preStatus = $job->getJobStatus();
@@ -107,6 +106,44 @@ class JobStatusController extends AbstractJobController
     }
 
     /**
+     * Used to change job status from SENT to PAO
+     *
+     * Used by customer
+     *
+     * @param int $id
+     * @return Response
+     */
+    #[Route('/to-pao', name: '_update_to_pao')]
+    public function updateFromSentToPao(int $id): Response
+    {
+        $job = $this->jobRepository->find($id);
+        if (!$this->isGranted('UPDATE_STATUS_FROM_SENT_TO_PAO', $job)) {
+            $this->addFlash('danger', "Vous n'avez pas les droits pour prendre en charge un job en PAO");
+
+            return $this->redirectToRoute('job_view', ['id' => $id]);
+        }
+
+        $job->setStatus(JobStatus::PAO->getValue());
+        $this->manager->flush();
+
+        $this->eventDispatcher->dispatch(
+            new AppJobEvent($job, JobEvent::PAO, JobStatus::SENT, JobStatus::PAO),
+            JobEvent::SENT->getEvent()
+        );
+
+        $this->addFlash(
+            'success',
+            sprintf(
+                'Le job <b class="font-bold">%s</b> a été pris en charge par %s.',
+                $job->getCustomerReference(),
+                $this->getUser()->getDisplayName('log')
+            )
+        );
+
+        return $this->redirectToRoute('job_view', ['id' => $id]);
+    }
+
+    /**
      * Used to send a job to CUSTOMER for APPROVAL.
      *
      * @param int $id
@@ -118,8 +155,8 @@ class JobStatusController extends AbstractJobController
         $job = $this->jobRepository->find($id);
         $preStatus = $job->getJobStatus();
 
-        if (!$this->isGranted('UPDATE_STATUS_FROM_SENT_TO_APPROVAL', $job)) {
-            $this->addFlash('danger', "Vous n'avez pas les droits pour la validation d'un BAT.");
+        if (!$this->isGranted('UPDATE_STATUS_FROM_PAO_TO_APPROVAL', $job)) {
+            $this->addFlash('danger', "Vous n'avez pas les droits pour envoyer un job en validation BAT.");
 
             return $this->redirectToRoute('job_view', ['id' => $id]);
         }

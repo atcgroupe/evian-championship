@@ -26,6 +26,7 @@ class AppJobEventSubscriber implements EventSubscriberInterface
             JobEvent::VALIDATION_FILE_REMOVED->getEvent() => 'addJobLog',
             JobEvent::DELIVERY_INFO_UPDATED->getEvent() => 'onDeliveryInfoUpdated',
             JobEvent::SENT->getEvent() => [['addJobUpdateLog'], ['dispatchNotification']],
+            JobEvent::PAO->getEvent() => [['addJobUpdateLog'], ['dispatchNotification']],
             JobEvent::APPROVAL->getEvent() => [['addJobUpdateLog'], ['dispatchNotification']],
             JobEvent::APPROVED->getEvent() => [['addJobUpdateLog'], ['dispatchNotification']],
             JobEvent::UPDATE->getEvent() => [['addJobUpdateLog'], ['dispatchNotification']],

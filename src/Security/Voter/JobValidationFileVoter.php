@@ -54,10 +54,7 @@ class JobValidationFileVoter extends Voter
             return false;
         }
 
-        if (
-            $this->job->getStatus() === JobStatus::SENT->getValue() ||
-            $this->job->getStatus() === JobStatus::REJECTED->getValue()
-        ) {
+        if ($this->job->getStatus() === JobStatus::PAO->getValue()) {
             return true;
         }
 
@@ -77,10 +74,7 @@ class JobValidationFileVoter extends Voter
             return false;
         }
 
-        if (
-            $this->job->getStatus() === JobStatus::SENT->getValue() ||
-            $this->job->getStatus() === JobStatus::REJECTED->getValue()
-        ) {
+        if ($this->job->getStatus() === JobStatus::PAO->getValue()) {
             return true;
         }
 

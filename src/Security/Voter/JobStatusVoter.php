@@ -14,7 +14,8 @@ class JobStatusVoter extends Voter
     private Job $job;
     public const UPDATE_STATUS = 'UPDATE_STATUS';
     public const UPDATE_STATUS_FROM_CREATED_TO_SENT = 'UPDATE_STATUS_FROM_CREATED_TO_SENT';
-    public const UPDATE_STATUS_FROM_SENT_TO_APPROVAL = 'UPDATE_STATUS_FROM_SENT_TO_APPROVAL';
+    public const UPDATE_STATUS_FROM_SENT_TO_PAO = 'UPDATE_STATUS_FROM_SENT_TO_PAO';
+    public const UPDATE_STATUS_FROM_PAO_TO_APPROVAL = 'UPDATE_STATUS_FROM_PAO_TO_APPROVAL';
     public const UPDATE_STATUS_FROM_APPROVAL = 'UPDATE_STATUS_FROM_APPROVAL';
     public const UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION = 'UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION';
     public const UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED = 'UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED';
@@ -31,7 +32,8 @@ class JobStatusVoter extends Voter
             $attribute, [
                 self::UPDATE_STATUS,
                 self::UPDATE_STATUS_FROM_CREATED_TO_SENT,
-                self::UPDATE_STATUS_FROM_SENT_TO_APPROVAL,
+                self::UPDATE_STATUS_FROM_SENT_TO_PAO,
+                self::UPDATE_STATUS_FROM_PAO_TO_APPROVAL,
                 self::UPDATE_STATUS_FROM_APPROVAL,
                 self::UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION,
                 self::UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED,
@@ -53,7 +55,8 @@ class JobStatusVoter extends Voter
         return match ($attribute) {
             self::UPDATE_STATUS => $this->canUpdateStatus(),
             self::UPDATE_STATUS_FROM_CREATED_TO_SENT => $this->canUpdateFromCreatedToSent(),
-            self::UPDATE_STATUS_FROM_SENT_TO_APPROVAL => $this->canUpdateFromSentToApproval(),
+            self::UPDATE_STATUS_FROM_SENT_TO_PAO => $this->canUpdateFromSentToPao(),
+            self::UPDATE_STATUS_FROM_PAO_TO_APPROVAL => $this->canUpdateFromPaoToApproval(),
             self::UPDATE_STATUS_FROM_APPROVAL => $this->canUpdateFromApproval(),
             self::UPDATE_STATUS_FROM_APPROVED_TO_PRODUCTION => $this->canUpdateFromApprovedToProduction(),
             self::UPDATE_STATUS_FROM_PRODUCTION_TO_SHIPPED => $this->canUpdateFromProductionToShipped(),
@@ -102,7 +105,30 @@ class JobStatusVoter extends Voter
     /**
      * @return bool
      */
-    private function canUpdateFromSentToApproval(): bool
+    private function canUpdateFromSentToPao(): bool
+    {
+        if (!$this->security->isGranted('ROLE_GRAPHIC_DESIGNER')) {
+            return false;
+        }
+
+        if (count($this->job->getJobFiles()) === 0) {
+            return false;
+        }
+
+        if (
+            $this->job->getStatus() == JobStatus::SENT->getValue() ||
+            $this->job->getStatus() == JobStatus::REJECTED->getValue()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    private function canUpdateFromPaoToApproval(): bool
     {
         if (!$this->security->isGranted('ROLE_GRAPHIC_DESIGNER')) {
             return false;
@@ -112,10 +138,7 @@ class JobStatusVoter extends Voter
             return false;
         }
 
-        if (
-            $this->job->getStatus() == JobStatus::SENT->getValue() ||
-            $this->job->getStatus() == JobStatus::REJECTED->getValue()
-        ) {
+        if ($this->job->getStatus() == JobStatus::PAO->getValue()) {
             return true;
         }
 

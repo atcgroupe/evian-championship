@@ -6,6 +6,7 @@ enum JobStatus: int implements AppEnumInterface
 {
     case CREATED = 1;
     case SENT = 2;
+    case PAO = 10;
     case APPROVAL = 3;
     case APPROVED = 4;
     case REJECTED = 5;
@@ -22,6 +23,7 @@ enum JobStatus: int implements AppEnumInterface
         {
             JobStatus::CREATED => 'Brouillon',
             JobStatus::SENT => 'A traiter par ATC',
+            JobStatus::PAO => 'En cours de PAO',
             JobStatus::APPROVAL => 'En attente de validation',
             JobStatus::APPROVED => 'Bat validé',
             JobStatus::REJECTED => 'Bat rejeté',
