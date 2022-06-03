@@ -9,6 +9,7 @@ use App\Service\AppSpreadsheet\AppWorksheetBuilder;
 use App\Service\AppSpreadsheet\CellAlignment;
 use App\Service\AppSpreadsheet\Column;
 use App\Service\AppSpreadsheet\AppWorksheetException;
+use Symfony\Component\Security\Core\Security;
 
 class JobReportingManager
 {
@@ -22,6 +23,7 @@ class JobReportingManager
     public function __construct(
         private JobRepository $jobRepository,
         private AppWorksheetBuilder $appWorksheetBuilder,
+        private Security $security,
     ) {
         $this->setData();
     }
@@ -93,17 +95,13 @@ class JobReportingManager
      */
     private function getXlsxReportColumns(): array
     {
-        return [
+        $columns = [
             new Column('REF', 20),
             new Column('EMPLACEMENT', 40),
             new Column('DESCRIPTIF', 40),
             new Column('PRODUIT', 30),
-            new Column('LARGEUR', 15, CellAlignment::HORIZONTAL_CENTER),
-            new Column('HAUTEUR', 15, CellAlignment::HORIZONTAL_CENTER),
-            new Column('DÉBORD G.', 15, CellAlignment::HORIZONTAL_CENTER),
-            new Column('DÉBORD D.', 15, CellAlignment::HORIZONTAL_CENTER),
-            new Column('DÉBORD H.', 15, CellAlignment::HORIZONTAL_CENTER),
-            new Column('DÉBORD B.', 15, CellAlignment::HORIZONTAL_CENTER),
+            new Column('FORMAT FINI', 20, CellAlignment::HORIZONTAL_CENTER),
+            new Column('FORMAT TOTAL', 20, CellAlignment::HORIZONTAL_CENTER),
             new Column('SURFACE (m2)', 15, CellAlignment::HORIZONTAL_CENTER, true),
             new Column('MODELES', 15, CellAlignment::HORIZONTAL_CENTER),
             new Column('EXEMPLAIRES', 15, CellAlignment::HORIZONTAL_CENTER),
@@ -112,6 +110,18 @@ class JobReportingManager
             new Column('PRIX UNITAIRE', 20, CellAlignment::HORIZONTAL_CENTER),
             new Column('PRIX TOTAL', 20, CellAlignment::HORIZONTAL_CENTER, true),
         ];
+
+        if ($this->security->isGranted('ROLE_CUSTOMER')) {
+            return $columns;
+        }
+
+        $statusColumns = [
+            new Column('LIVRAISON', 30, CellAlignment::HORIZONTAL_CENTER),
+            new Column('STATUT', 30, CellAlignment::HORIZONTAL_CENTER),
+            new Column('COMMENTAIRE', 50),
+        ];
+
+        return array_merge($columns, $statusColumns);
     }
 
     /**
@@ -121,17 +131,13 @@ class JobReportingManager
     {
         $data = [];
         foreach ($this->jobs as $job) {
-            $data[] = [
+            $jobData = [
                 $job->getCustomerReference(),
                 $job->getLocation(),
                 $job->getDescription(),
                 $job->getProduct()->getName(),
-                $job->getWidth(),
-                $job->getHeight(),
-                $job->getLeftBleed(),
-                $job->getRightBleed(),
-                $job->getTopBleed(),
-                $job->getBottomBleed(),
+                $job->getDisplayVisibleFormat(),
+                $job->getDisplayTotalFormat(),
                 round($job->getTotalBleedSurface(), 2),
                 $job->getImageCount(),
                 $job->getImageQuantity(),
@@ -140,6 +146,15 @@ class JobReportingManager
                 round($job->getUnitPrice(), 2),
                 round($job->getTotalPrice(), 2),
             ];
+
+            $statusData = [
+                ($job->getDelivery()) ? $job->getDelivery()->getDisplayName() : null,
+                $job->getDisplayStatus(),
+                $job->getCustomerComment(),
+            ];
+
+            $data[] = ($this->security->isGranted('ROLE_CUSTOMER'))
+                ? $jobData : array_merge($jobData, $statusData);
         }
 
         return $data;
