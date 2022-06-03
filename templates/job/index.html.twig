@@ -89,6 +89,9 @@
                     <th class="{{ theadCellClass }} text-center hidden xl:table-cell">QUANTITÉ</th>
                     <th class="{{ theadCellClass }} text-center hidden md:table-cell">LIVRAISON</th>
                     <th class="{{ theadCellClass }} sort text-center" data-sort="status">STATUT</th>
+                    {% if is_granted('ROLE_COMPANY_USER') %}
+                        <th class="{{ theadCellClass }} text-center"><i class="fas fa-comment-alt"></i></th>
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -122,6 +125,18 @@
                         {% endif %}
                     </td>
                     <td class="{{ tbodyCellClass }} status text-center">{{ job.displayStatus}}</td>
+                    {% if is_granted('ROLE_PROJECT_MANAGER') %}
+                        <td class="{{ tbodyCellClass }} text-center">
+                            {% if job.customerComment %}
+                                <div
+                                    data-controller="comment"
+                                    data-action="click->comment#click"
+                                    data-comment="{{ job.customerComment|nl2br }}">
+                                    <i class="far fa-comment-alt"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -147,5 +162,27 @@
                 </p>
             </div>
         {% endif %}
+    </div>
+
+    <div
+        id="comment-container"
+        class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-20 flex items-center justify-center">
+        <div
+            class="
+                bg-white
+                rounded-md
+                w-[300]
+                border border-gray-400
+                shadow-md
+                p-5
+                text-gray-500
+                flex items-center
+            "
+        >
+            <div class="text-center">
+                <i class="far fa-comment-alt text-3xl mr-3"></i>
+            </div>
+            <div id="comment"></div>
+        </div>
     </div>
 {% endblock %}
