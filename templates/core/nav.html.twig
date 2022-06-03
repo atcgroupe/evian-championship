@@ -31,12 +31,14 @@
                         label: 'Suivi des jobs'
                     }) }}
 
-                    {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_PROJECT_MANAGER') %}
                     {{ include('component/nav/navbar_menu_item.html.twig', {
                         href: path('job_reporting_index'),
                         label: 'Reporting'
                     }) }}
+                    {% endif %}
 
+                    {% if is_granted('ROLE_CUSTOMER') %}
                     {{ include('component/nav/navbar_menu_item.html.twig', {
                         href: path('job_create'),
                         label: 'nouveau job'

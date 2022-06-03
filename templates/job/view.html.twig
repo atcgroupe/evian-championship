@@ -67,7 +67,7 @@
         {% endif %}
 
         {# Reject info #}
-        {% if is_granted('ROLE_COMPANY_USER', job) and (job.status == 5 or job.status == 10) %}
+        {% if is_granted('ROLE_COMPANY_USER', job) and job.rejectComment and (job.status == 5 or job.status == 10) %}
             <div
                     class="
                     p-3 my-10
